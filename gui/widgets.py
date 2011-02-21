@@ -160,5 +160,7 @@ class UpdatedLabel(pyglet.text.Label):
         if self.update_func and self.update_object:
             self.update_count += 1
             if self.update_count % self.update_rate == 0:
-                self.text = self.update_func(self.update_object)
                 self.update_count = 0
+                text = self.update_func(self.update_object)
+                if self.text != text:
+                    self.text = text
