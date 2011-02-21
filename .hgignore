@@ -1,0 +1,11 @@
+syntax: glob
+*.log
+*.pyc
+*.pyo
+*.tmp
+*~
+images/texture_cache/*.png
+VERSION
+.settings
+.project
+.pydevproject
