@@ -9,6 +9,8 @@ Copyright © 2011 Paweł Sobkowiak. All rights reserved.
 
 '''
 
+import pyglet.text
+
 
 class Switch(object):
     def __init__(self, state=False):
@@ -25,6 +27,12 @@ class Switch(object):
 
     def __nonzero__(self):
         return self.value
+
+    def __trunc__(self):
+        if self:
+            return 1
+        else:
+            return 0
 
 
 class CheckboxProxy(Switch):
@@ -126,3 +134,31 @@ class PointingSwitchCycle(SwitchCycle):
     def lenght(self, value):
         """ Override SwitchCycle setting of length attribute """
         pass
+
+
+class UpdatedLabel(pyglet.text.Label):
+    def __init__(self, *args, **kwargs):
+        if 'update_object' in kwargs:
+            self.update_object = kwargs['update_object']
+            del kwargs['update_object']
+        else:
+            self.update_object = None
+        if 'update_func' in kwargs:
+            self.update_func = kwargs['update_func']
+            del kwargs['update_func']
+        else:
+            self.update_func = None
+        if 'update_rate' in kwargs:
+            self.update_rate = kwargs['update_rate']
+            del kwargs['update_rate']
+        else:
+            self.update_rate = 10
+        super(UpdatedLabel, self).__init__(*args, **kwargs)
+        self.update_count = self.update_rate - 1
+
+    def update(self):
+        if self.update_func and self.update_object:
+            self.update_count += 1
+            if self.update_count % self.update_rate == 0:
+                self.text = self.update_func(self.update_object)
+                self.update_count = 0
