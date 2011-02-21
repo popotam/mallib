@@ -11,7 +11,7 @@ Copyright © 2011 Paweł Sobkowiak
 
 import pyglet.window
 from pyglet.window import key
-from mallib.gui import widgets
+import mallib.gui.widgets as malwidgets
 
 
 class MalWindow(pyglet.window.Window):
@@ -32,7 +32,7 @@ class MalWindow(pyglet.window.Window):
 
         self.current_view = None
         self.views = []
-        self.views_switch = widgets.PointingSwitchCycle(self, 'views')
+        self.views_switch = malwidgets.PointingSwitchCycle(self, 'views')
         #self.switch_view(self.views_switch())
 
     def switch_view(self, new_view):
