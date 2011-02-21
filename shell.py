@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 u'''iPython shell initialization code.
 
-Malsimulation: Malleable World Simulator
+mallib: common library for mal projects
 @author: Paweł Sobkowiak
 @contact: pawel.sobkowiak@gmail.com
 Copyright © 2011 Paweł Sobkowiak
