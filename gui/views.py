@@ -17,6 +17,7 @@ class View(object):
         self.window = window
         self.frame = None
         self.camera = None
+        self.controller = None
         self.fps_display = pyglet.clock.ClockDisplay()
 
     def push_handlers(self):
@@ -27,6 +28,7 @@ class View(object):
         """
         self.setup()
         self.window.push_handlers(self.camera)
+        self.window.push_handlers(self.controller)
         self.window.push_handlers(self.frame)
         self.window.push_handlers(self)
 
