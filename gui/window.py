@@ -9,9 +9,21 @@ Copyright © 2011 Paweł Sobkowiak
 
 '''
 
+import pyglet.gl
 import pyglet.window
 from pyglet.window import key
 import mallib.gui.widgets as malwidgets
+
+
+def get_best_config(**kwargs):
+    platform = pyglet.window.get_platform()
+    display = platform.get_default_display()
+    screen = display.get_default_screen()
+    template = pyglet.gl.Config(**kwargs)
+    try:
+        return screen.get_best_config(template)
+    except pyglet.window.NoSuchConfigException:
+        return None
 
 
 class MalWindow(pyglet.window.Window):
