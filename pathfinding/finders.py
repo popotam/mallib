@@ -72,7 +72,7 @@ def find_path(departure, destination, max_fields_checked=1000000):
 
         # check every neighbouring fields
         current_g = path_g[current_field]
-        for direction, connection in current_field.connections.items():
+        for connection in current_field.connections:
             cost = connection.cost
             neighbour = connection.destination
             if cost != NOT_PASSABLE and neighbour not in closed:
@@ -82,7 +82,7 @@ def find_path(departure, destination, max_fields_checked=1000000):
                         # update field cost
                         path_g[neighbour] = cost
                         path_f[neighbour] = cost + path_h[neighbour]
-                        path_parent[neighbour] = (direction, current_field)
+                        path_parent[neighbour] = current_field
                         bisect.insort(opened_ordered,
                                       (path_f[neighbour], neighbour))
                 else:
@@ -93,7 +93,7 @@ def find_path(departure, destination, max_fields_checked=1000000):
                     path_g[neighbour] = cost
                     path_h[neighbour] = heuristic
                     path_f[neighbour] = cost + heuristic
-                    path_parent[neighbour] = (direction, current_field)
+                    path_parent[neighbour] = current_field
                     bisect.insort(opened_ordered,
                                   (path_f[neighbour], neighbour))
                     opened.add(neighbour)
@@ -106,11 +106,11 @@ def find_path(departure, destination, max_fields_checked=1000000):
 
     # backtracing path
     path = []
-    node = path_parent[current_field]
-    while node:
-        path.append(node[0])
-        current_field = node[1]
-        node = path_parent[current_field]
+    parent = path_parent[current_field]
+    while parent:
+        path.append(current_field)
+        current_field = parent
+        parent = path_parent[current_field]
 
     # calculating stats
     total_cost = path_g[destination] if success else -1
@@ -157,7 +157,7 @@ def find_nearest_targets(departure, target_getter,
         closed.add(current_field)
 
         # check every neighbouring field
-        for direction, connection in current_field.connections.items():
+        for connection in current_field.connections:
             neighbour_cost = connection.cost
             neighbour = connection.destination
             if neighbour_cost != NOT_PASSABLE and neighbour not in closed:
@@ -166,13 +166,13 @@ def find_nearest_targets(departure, target_getter,
                     if path_cost[neighbour] > neighbour_cost:
                         # update field cost
                         path_cost[neighbour] = neighbour_cost
-                        path_parent[neighbour] = (direction, current_field)
+                        path_parent[neighbour] = current_field
                         bisect.insort(opened_ordered,
                                       (neighbour_cost, neighbour))
                 else:
                     # add to opened list
                     path_cost[neighbour] = neighbour_cost
-                    path_parent[neighbour] = (direction, current_field)
+                    path_parent[neighbour] = current_field
                     bisect.insort(opened_ordered, (neighbour_cost, neighbour))
                     opened.add(neighbour)
 
@@ -181,11 +181,11 @@ def find_nearest_targets(departure, target_getter,
     for destination, targets in destinations:
         path = []
         field = destination
-        node = path_parent[field]
-        while node:
-            path.append(node[0])
-            field = node[1]
-            node = path_parent[field]
+        parent = path_parent[field]
+        while parent:
+            path.append(field)
+            field = parent
+            parent = path_parent[field]
         paths.append({'path': path, 'destination': destination,
                       'cost': path_cost[destination], 'targets': targets})
 
