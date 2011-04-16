@@ -121,20 +121,19 @@ def find_nearest_targets(src, target_getter,
     destinations = []
     start_time = time()
 
-    path_cost = {src: 0}
-    path_parent = {src: None}
+    costs = {src: (0, None)}
     opened_ordered = [(0, src)]
     opened = set([src])
     closed = set()
     while opened_ordered:
-        cost, field = opened_ordered.pop(0)
+        field_cost, field = opened_ordered.pop(0)
         # optimalization - it is better to check if field is already
         # in closed list, than to remove touple from opened_ordered list
         if field in closed:
             continue
 
         # check if we achieved destination
-        if path_cost[field] > max_distance:
+        if field_cost > max_distance:
             break
         targets = target_getter(field)
         if targets:
@@ -148,23 +147,20 @@ def find_nearest_targets(src, target_getter,
 
         # check every neighbouring field
         for connection in field.connections:
-            neighbour_cost = connection.cost
+            cost = connection.cost
             neighbour = connection.destination
-            if neighbour_cost == NOT_PASSABLE or neighbour in closed:
+            if cost == NOT_PASSABLE or neighbour in closed:
                 continue
-            neighbour_cost += cost
+            cost += field_cost
             if neighbour in opened:
-                if path_cost[neighbour] > neighbour_cost:
-                    # update field cost
-                    path_cost[neighbour] = neighbour_cost
-                    path_parent[neighbour] = field
-                    bisect.insort(opened_ordered,
-                                  (neighbour_cost, neighbour))
+                if cost < costs[neighbour][0]:
+                    # update neighbour cost
+                    costs[neighbour] = (cost, field)
+                    bisect.insort(opened_ordered, (cost, neighbour))
             else:
                 # add to opened list
-                path_cost[neighbour] = neighbour_cost
-                path_parent[neighbour] = field
-                bisect.insort(opened_ordered, (neighbour_cost, neighbour))
+                costs[neighbour] = (cost, field)
+                bisect.insort(opened_ordered, (cost, neighbour))
                 opened.add(neighbour)
 
     # backtracing paths
@@ -172,13 +168,13 @@ def find_nearest_targets(src, target_getter,
     for destination, targets in destinations:
         path = []
         field = destination
-        parent = path_parent[field]
+        parent = costs[field][1]
         while parent:
             path.append(field)
             field = parent
-            parent = path_parent[field]
+            parent = costs[field][1]
         paths.append({'path': path, 'destination': destination,
-                      'cost': path_cost[destination], 'targets': targets})
+                      'cost': costs[destination][0], 'targets': targets})
 
     # calculating stats
     calculation_time = time() - start_time
