@@ -41,13 +41,13 @@ def find_path(src, dst, max_fields_checked=1000000):
     heuristic = (abs(x - dx) + abs(y - dy) + abs(z - dz))
     ### costs = { field: (g, h, parent), ... }
     costs = {src: (0, heuristic, None)}
-    ### open_ordered = [(g + h, field), ...]
-    opened_ordered = [(heuristic, src)]
+    ### open_ordered = [(g + h, g, field), ...]
+    opened_ordered = [(heuristic, 0, src)]
     opened = set([src])
     closed = set()
 
     while opened_ordered:
-        field = opened_ordered.pop(0)[1]
+        field_f, field_g, field = opened_ordered.pop(0)
         # optimalization - it is better to check if field is already
         # in closed list, than to remove touple from opened_ordered list
         if field in closed:
@@ -66,7 +66,7 @@ def find_path(src, dst, max_fields_checked=1000000):
         closed.add(field)
 
         # check every neighbouring fields
-        field_g = costs[field][0]
+        #field_g = costs[field][0]
         for connection in field.connections:
             cost = connection.cost
             neighbour = connection.destination
@@ -78,14 +78,14 @@ def find_path(src, dst, max_fields_checked=1000000):
                 if cost < old_g:
                     # update field cost
                     costs[neighbour] = (cost, h, field)
-                    bisect.insort(opened_ordered, (cost + h, neighbour))
+                    bisect.insort(opened_ordered, (cost + h, cost, neighbour))
             else:
                 # add field to opened list
                 x, y, z = neighbour.xyz
                 heuristic = (abs(x - dx) + abs(y - dy) + abs(z - dz))
                 costs[neighbour] = (cost, heuristic, field)
                 bisect.insort(opened_ordered,
-                              (cost + heuristic, neighbour))
+                              (cost + heuristic, cost, neighbour))
                 opened.add(neighbour)
 
     if success is None:
