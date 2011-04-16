@@ -36,16 +36,13 @@ def find_path(departure, destination, max_fields_checked=1000000):
     success = None
     start_time = time()
 
-    path_g = {}
-    path_h = {}
-    path_parent = {}
+    ### costs = { field: (g, h, parent), ... }
+    costs = {}
     dx, dy, dz = destination.xyz
     x, y, z = departure.xyz
     first_heuristic = (abs(x - dx) + abs(y - dy) + abs(z - dz))
-    path_g[departure] = 0
-    path_h[departure] = first_heuristic
-    path_parent[departure] = None
-    # open_ordered = [(path_g[field] + path_h[field], field), ...]
+    costs[departure] = (0, first_heuristic, None)
+    ### open_ordered = [(path_g[field] + path_h[field], field), ...]
     opened_ordered = [(first_heuristic, departure)]
     opened = set([departure])
     closed = set()
@@ -69,7 +66,7 @@ def find_path(departure, destination, max_fields_checked=1000000):
         closed.add(current_field)
 
         # check every neighbouring fields
-        current_g = path_g[current_field]
+        current_g = costs[current_field][0]
         for connection in current_field.connections:
             cost = connection.cost
             neighbour = connection.destination
@@ -77,19 +74,16 @@ def find_path(departure, destination, max_fields_checked=1000000):
                 continue
             cost += current_g
             if neighbour in opened:
-                if path_g[neighbour] > cost:
+                ng, nh, nparent = costs[neighbour]
+                if ng > cost:
                     # update field cost
-                    path_g[neighbour] = cost
-                    path_parent[neighbour] = current_field
-                    bisect.insort(opened_ordered,
-                                  (cost + path_h[neighbour], neighbour))
+                    costs[neighbour] = (cost, nh, current_field)
+                    bisect.insort(opened_ordered, (cost + nh, neighbour))
             else:
                 # add field to opened list
                 x, y, z = neighbour.xyz
                 heuristic = (abs(x - dx) + abs(y - dy) + abs(z - dz))
-                path_g[neighbour] = cost
-                path_h[neighbour] = heuristic
-                path_parent[neighbour] = current_field
+                costs[neighbour] = (cost, heuristic, current_field)
                 bisect.insort(opened_ordered,
                               (cost + heuristic, neighbour))
                 opened.add(neighbour)
@@ -102,14 +96,14 @@ def find_path(departure, destination, max_fields_checked=1000000):
 
     # backtracing path
     path = []
-    parent = path_parent[current_field]
+    parent = costs[current_field][2]
     while parent:
         path.append(current_field)
         current_field = parent
-        parent = path_parent[current_field]
+        parent = costs[current_field][2]
 
     # calculating stats
-    total_cost = path_g[destination] if success else -1
+    total_cost = costs[destination][0] if success else -1
     calculation_time = time() - start_time
     logger.debug("astar %.3f %s->%s lenght=%i closed=%i total_cost=%i heur=%i",
             calculation_time, departure.xyz, destination.xyz, len(path),
