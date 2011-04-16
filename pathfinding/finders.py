@@ -75,28 +75,29 @@ def find_path(departure, destination, max_fields_checked=1000000):
         for connection in current_field.connections:
             cost = connection.cost
             neighbour = connection.destination
-            if cost != NOT_PASSABLE and neighbour not in closed:
-                cost += current_g
-                if neighbour in opened:
-                    if path_g[neighbour] > cost:
-                        # update field cost
-                        path_g[neighbour] = cost
-                        path_f[neighbour] = cost + path_h[neighbour]
-                        path_parent[neighbour] = current_field
-                        bisect.insort(opened_ordered,
-                                      (path_f[neighbour], neighbour))
-                else:
-                    # add field to opened list
-                    heuristic = (abs(neighbour.xyz.x - destination.xyz.x) +
-                                 abs(neighbour.xyz.y - destination.xyz.y) +
-                                 abs(neighbour.xyz.z - destination.xyz.z))
+            if cost == NOT_PASSABLE or neighbour in closed:
+                continue
+            cost += current_g
+            if neighbour in opened:
+                if path_g[neighbour] > cost:
+                    # update field cost
                     path_g[neighbour] = cost
-                    path_h[neighbour] = heuristic
-                    path_f[neighbour] = cost + heuristic
+                    path_f[neighbour] = cost + path_h[neighbour]
                     path_parent[neighbour] = current_field
                     bisect.insort(opened_ordered,
                                   (path_f[neighbour], neighbour))
-                    opened.add(neighbour)
+            else:
+                # add field to opened list
+                heuristic = (abs(neighbour.xyz.x - destination.xyz.x) +
+                             abs(neighbour.xyz.y - destination.xyz.y) +
+                             abs(neighbour.xyz.z - destination.xyz.z))
+                path_g[neighbour] = cost
+                path_h[neighbour] = heuristic
+                path_f[neighbour] = cost + heuristic
+                path_parent[neighbour] = current_field
+                bisect.insort(opened_ordered,
+                              (path_f[neighbour], neighbour))
+                opened.add(neighbour)
 
     if success is None:
         logger.error("No path found - opened list empty - find_path(%s, %s)",
@@ -160,21 +161,22 @@ def find_nearest_targets(departure, target_getter,
         for connection in current_field.connections:
             neighbour_cost = connection.cost
             neighbour = connection.destination
-            if neighbour_cost != NOT_PASSABLE and neighbour not in closed:
-                neighbour_cost += current_cost
-                if neighbour in opened:
-                    if path_cost[neighbour] > neighbour_cost:
-                        # update field cost
-                        path_cost[neighbour] = neighbour_cost
-                        path_parent[neighbour] = current_field
-                        bisect.insort(opened_ordered,
-                                      (neighbour_cost, neighbour))
-                else:
-                    # add to opened list
+            if neighbour_cost == NOT_PASSABLE or neighbour in closed:
+                continue
+            neighbour_cost += current_cost
+            if neighbour in opened:
+                if path_cost[neighbour] > neighbour_cost:
+                    # update field cost
                     path_cost[neighbour] = neighbour_cost
                     path_parent[neighbour] = current_field
-                    bisect.insort(opened_ordered, (neighbour_cost, neighbour))
-                    opened.add(neighbour)
+                    bisect.insort(opened_ordered,
+                                  (neighbour_cost, neighbour))
+            else:
+                # add to opened list
+                path_cost[neighbour] = neighbour_cost
+                path_parent[neighbour] = current_field
+                bisect.insort(opened_ordered, (neighbour_cost, neighbour))
+                opened.add(neighbour)
 
     # backtracing paths
     paths = []
