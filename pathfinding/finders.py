@@ -41,15 +41,15 @@ def find_path(src, dst, max_fields_checked=1000000):
     heuristic = (abs(x - dx) + abs(y - dy) + abs(z - dz))
     ### costs = { field: (g, h, parent), ... }
     costs = {src: (0, heuristic, None)}
-    ### open_ordered = [(g + h, g, field), ...]
-    opened_ordered = [(heuristic, 0, src)]
+    ### queue = [(g + h, g, field), ...]
+    queue = [(heuristic, 0, src)]
     opened = set([src])
     closed = set()
 
-    while opened_ordered:
-        field_f, field_g, field = opened_ordered.pop(0)
+    while queue:
+        field_f, field_g, field = queue.pop(0)
         # optimalization - it is better to check if field is already
-        # in closed list, than to remove touple from opened_ordered list
+        # in closed list, than to remove touple from queue list
         if field in closed:
             continue
 
@@ -78,14 +78,13 @@ def find_path(src, dst, max_fields_checked=1000000):
                 if cost < old_g:
                     # update field cost
                     costs[neighbour] = (cost, h, field)
-                    bisect.insort(opened_ordered, (cost + h, cost, neighbour))
+                    bisect.insort(queue, (cost + h, cost, neighbour))
             else:
                 # add field to opened list
                 x, y, z = neighbour.xyz
                 heuristic = (abs(x - dx) + abs(y - dy) + abs(z - dz))
                 costs[neighbour] = (cost, heuristic, field)
-                bisect.insort(opened_ordered,
-                              (cost + heuristic, cost, neighbour))
+                bisect.insort(queue, (cost + heuristic, cost, neighbour))
                 opened.add(neighbour)
 
     if success is None:
@@ -122,13 +121,13 @@ def find_nearest_targets(src, target_getter,
     start_time = time()
 
     costs = {src: (0, None)}
-    opened_ordered = [(0, src)]
+    queue = [(0, src)]
     opened = set([src])
     closed = set()
-    while opened_ordered:
-        field_cost, field = opened_ordered.pop(0)
+    while queue:
+        field_cost, field = queue.pop(0)
         # optimalization - it is better to check if field is already
-        # in closed list, than to remove touple from opened_ordered list
+        # in closed list, than to remove touple from queue list
         if field in closed:
             continue
 
@@ -156,11 +155,11 @@ def find_nearest_targets(src, target_getter,
                 if cost < costs[neighbour][0]:
                     # update neighbour cost
                     costs[neighbour] = (cost, field)
-                    bisect.insort(opened_ordered, (cost, neighbour))
+                    bisect.insort(queue, (cost, neighbour))
             else:
                 # add to opened list
                 costs[neighbour] = (cost, field)
-                bisect.insort(opened_ordered, (cost, neighbour))
+                bisect.insort(queue, (cost, neighbour))
                 opened.add(neighbour)
 
     # backtracing paths
