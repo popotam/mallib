@@ -38,15 +38,14 @@ def find_path(departure, destination, max_fields_checked=1000000):
 
     path_g = {}
     path_h = {}
-    path_f = {}
     path_parent = {}
     dx, dy, dz = destination.xyz
     x, y, z = departure.xyz
     first_heuristic = (abs(x - dx) + abs(y - dy) + abs(z - dz))
     path_g[departure] = 0
     path_h[departure] = first_heuristic
-    path_f[departure] = first_heuristic
     path_parent[departure] = None
+    # open_ordered = [(path_g[field] + path_h[field], field), ...]
     opened_ordered = [(first_heuristic, departure)]
     opened = set([departure])
     closed = set()
@@ -81,18 +80,18 @@ def find_path(departure, destination, max_fields_checked=1000000):
                 if path_g[neighbour] > cost:
                     # update field cost
                     path_g[neighbour] = cost
-                    path_f[neighbour] = f = cost + path_h[neighbour]
                     path_parent[neighbour] = current_field
-                    bisect.insort(opened_ordered, (f, neighbour))
+                    bisect.insort(opened_ordered,
+                                  (cost + path_h[neighbour], neighbour))
             else:
                 # add field to opened list
                 x, y, z = neighbour.xyz
                 heuristic = (abs(x - dx) + abs(y - dy) + abs(z - dz))
                 path_g[neighbour] = cost
                 path_h[neighbour] = heuristic
-                path_f[neighbour] = f = cost + heuristic
                 path_parent[neighbour] = current_field
-                bisect.insort(opened_ordered, (f, neighbour))
+                bisect.insort(opened_ordered,
+                              (cost + heuristic, neighbour))
                 opened.add(neighbour)
 
     if success is None:
