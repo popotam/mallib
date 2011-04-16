@@ -40,10 +40,9 @@ def find_path(departure, destination, max_fields_checked=1000000):
     path_h = {}
     path_f = {}
     path_parent = {}
-
-    first_heuristic = (abs(departure.xyz.x - destination.xyz.x) +
-                       abs(departure.xyz.y - destination.xyz.y) +
-                       abs(departure.xyz.z - destination.xyz.z))
+    dx, dy, dz = destination.xyz
+    x, y, z = departure.xyz
+    first_heuristic = (abs(x - dx) + abs(y - dy) + abs(z - dz))
     path_g[departure] = 0
     path_h[departure] = first_heuristic
     path_f[departure] = first_heuristic
@@ -82,21 +81,18 @@ def find_path(departure, destination, max_fields_checked=1000000):
                 if path_g[neighbour] > cost:
                     # update field cost
                     path_g[neighbour] = cost
-                    path_f[neighbour] = cost + path_h[neighbour]
+                    path_f[neighbour] = f = cost + path_h[neighbour]
                     path_parent[neighbour] = current_field
-                    bisect.insort(opened_ordered,
-                                  (path_f[neighbour], neighbour))
+                    bisect.insort(opened_ordered, (f, neighbour))
             else:
                 # add field to opened list
-                heuristic = (abs(neighbour.xyz.x - destination.xyz.x) +
-                             abs(neighbour.xyz.y - destination.xyz.y) +
-                             abs(neighbour.xyz.z - destination.xyz.z))
+                x, y, z = neighbour.xyz
+                heuristic = (abs(x - dx) + abs(y - dy) + abs(z - dz))
                 path_g[neighbour] = cost
                 path_h[neighbour] = heuristic
-                path_f[neighbour] = cost + heuristic
+                path_f[neighbour] = f = cost + heuristic
                 path_parent[neighbour] = current_field
-                bisect.insort(opened_ordered,
-                              (path_f[neighbour], neighbour))
+                bisect.insort(opened_ordered, (f, neighbour))
                 opened.add(neighbour)
 
     if success is None:
