@@ -19,7 +19,7 @@ MockXYZ = collections.namedtuple('MockXYZ', 'x y z')
 MockConnection = collections.namedtuple('MockConnection', 'destination cost')
 MOCK_DIRECTIONS = (MockXYZ(1, 0, 0), MockXYZ(-1, 0, 0),
                    MockXYZ(0, 1, 0), MockXYZ(0, -1, 0))
-
+SIZE_X, SIZE_Y = 10, 10
 
 class MockField(object):
     def __init__(self, graph, x, y, passable, tags=None):
@@ -48,8 +48,8 @@ class MockField(object):
 
 class MockGraph(dict):
     def __init__(self):
-        for x in xrange(10):
-            for y in xrange(10):
+        for x in xrange(SIZE_X):
+            for y in xrange(SIZE_Y):
                 self[MockXYZ(x, y, 0)] = MockField(self, x, y, True)
         # set some unpassable fields
         self[8, 0, 0].passable = False
@@ -71,7 +71,7 @@ class TestPathfinding(unittest.TestCase):
 
     def test_find_path(self):
         departure = self.graph[(1, 1, 0)]
-        destination = self.graph[(8, 8, 0)]
+        destination = self.graph[(SIZE_X - 2, SIZE_Y - 2, 0)]
         found_path = find_path(departure, destination)
         self.assertEqual(len(found_path), 14)
 
