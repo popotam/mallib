@@ -28,22 +28,22 @@ class MockField(object):
         self.passable = passable
         self.graph = graph
         self.tags = tags if tags is not None else set()
+        self.connections = []
 
     @property
     def xyz(self):
         return MockXYZ(self.x, self.y, 0)
 
-    @property
-    def connections(self):
-        connections = []
+    def generate_connections(self):
+        self.connections = []
         for direction in MOCK_DIRECTIONS:
             neighbor_xyz = MockXYZ(self.x + direction.x,
                                    self.y + direction.y, 0)
             neighbor_field = self.graph.get(neighbor_xyz)
             if neighbor_field:
                 cost = 1 if neighbor_field.passable else NOT_PASSABLE
-                connections.append(MockConnection(neighbor_field, cost))
-        return connections
+                self.connections.append(MockConnection(neighbor_field, cost))
+        return self.connections
 
 
 class MockGraph(dict):
@@ -55,6 +55,9 @@ class MockGraph(dict):
         self[8, 0, 0].passable = False
         self[8, 1, 0].passable = False
         self[9, 1, 0].passable = False
+        # generate connections
+        for field in self.values():
+            field.generate_connections()
         # set some tags
         self[5, 5, 0].tags |= set(['single_target', 'target'])
         self[5, 9, 0].tags |= set(['target'])
