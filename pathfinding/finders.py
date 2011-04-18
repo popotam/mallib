@@ -22,13 +22,13 @@ class NoPathFound(Exception):
     pass
 
 
-#def dist_heuristic(field1, field2):
-#    x1, y1, z1 = field1.xyz
-#    x2, y2, z2 = field2.xyz
+#def dist_heuristic(node1, node2):
+#    x1, y1, z1 = node1.xyz
+#    x2, y2, z2 = node2.xyz
 #    return abs(x1 - x2) + abs(y1 - y2) + abs(z1 - z2)
 
 
-def find_path(src, dst, max_fields_checked=1000000):
+def find_path(src, dst, max_nodes_checked=1000000):
     """ Implementation of A* algorithm """
     global logger
     if src == dst:
@@ -39,51 +39,50 @@ def find_path(src, dst, max_fields_checked=1000000):
     dx, dy, dz = dst.xyz
     x, y, z = src.xyz
     heuristic = (abs(x - dx) + abs(y - dy) + abs(z - dz))
-    ### costs = { field: (g, h, parent), ... }
+    ### costs = { node: (g, h, parent), ... }
     costs = {src: (0, heuristic, None)}
-    ### queue = [(g + h, g, field), ...]
+    ### queue = [(g + h, g, node), ...]
     queue = [(heuristic, 0, src)]
     opened = set([src])
     closed = set()
 
     while queue:
-        field_f, field_g, field = queue.pop(0)
-        # optimalization - it is better to check if field is already
+        node_f, node_g, node = queue.pop(0)
+        # optimalization - it is better to check if node is already
         # in closed list, than to remove touple from queue list
-        if field in closed:
+        if node in closed:
             continue
 
         # check if destination has been achieved
-        if field == dst:
+        if node == dst:
             success = True
             break
-        elif len(closed) > max_fields_checked:
+        elif len(closed) > max_nodes_checked:
             success = False
             break
 
-        # move field to closed list
-        opened.remove(field)
-        closed.add(field)
+        # move node to closed list
+        opened.remove(node)
+        closed.add(node)
 
-        # check every neighbouring fields
-        #field_g = costs[field][0]
-        for connection in field.connections:
+        # check every neighbouring nodes
+        for connection in node.connections:
             cost = connection.cost
             neighbour = connection.destination
             if cost == NOT_PASSABLE or neighbour in closed:
                 continue
-            cost += field_g
+            cost += node_g
             if neighbour in opened:
                 old_g, h, parent = costs[neighbour]
                 if cost < old_g:
-                    # update field cost
-                    costs[neighbour] = (cost, h, field)
+                    # update node cost
+                    costs[neighbour] = (cost, h, node)
                     bisect.insort(queue, (cost + h, cost, neighbour))
             else:
-                # add field to opened list
+                # add node to opened list
                 x, y, z = neighbour.xyz
                 heuristic = (abs(x - dx) + abs(y - dy) + abs(z - dz))
-                costs[neighbour] = (cost, heuristic, field)
+                costs[neighbour] = (cost, heuristic, node)
                 bisect.insort(queue, (cost + heuristic, cost, neighbour))
                 opened.add(neighbour)
 
@@ -95,11 +94,11 @@ def find_path(src, dst, max_fields_checked=1000000):
 
     # backtracing path
     path = []
-    parent = costs[field][2]
+    parent = costs[node][2]
     while parent:
-        path.append(field)
-        field = parent
-        parent = costs[field][2]
+        path.append(node)
+        node = parent
+        parent = costs[node][2]
 
     # calculating stats
     total_cost = costs[dst][0] if success else -1
@@ -113,7 +112,7 @@ def find_path(src, dst, max_fields_checked=1000000):
 def find_nearest_targets(src, target_getter,
                          count=1, max_distance=100000):
     """
-    Uses Dijkstra algorithm to find fields that has any target
+    Uses Dijkstra algorithm to find nodes that have any target
     returned by given target getter
     """
     global logger
@@ -125,40 +124,40 @@ def find_nearest_targets(src, target_getter,
     opened = set([src])
     closed = set()
     while queue:
-        field_cost, field = queue.pop(0)
-        # optimalization - it is better to check if field is already
+        node_cost, node = queue.pop(0)
+        # optimalization - it is better to check if node is already
         # in closed list, than to remove touple from queue list
-        if field in closed:
+        if node in closed:
             continue
 
         # check if we achieved destination
-        if field_cost > max_distance:
+        if node_cost > max_distance:
             break
-        targets = target_getter(field)
+        targets = target_getter(node)
         if targets:
-            destinations.append((field, targets))
+            destinations.append((node, targets))
             if len(destinations) >= count:
                 break
 
         # move to closed list
-        opened.remove(field)
-        closed.add(field)
+        opened.remove(node)
+        closed.add(node)
 
-        # check every neighbouring field
-        for connection in field.connections:
+        # check every neighbouring node
+        for connection in node.connections:
             cost = connection.cost
             neighbour = connection.destination
             if cost == NOT_PASSABLE or neighbour in closed:
                 continue
-            cost += field_cost
+            cost += node_cost
             if neighbour in opened:
                 if cost < costs[neighbour][0]:
                     # update neighbour cost
-                    costs[neighbour] = (cost, field)
+                    costs[neighbour] = (cost, node)
                     bisect.insort(queue, (cost, neighbour))
             else:
                 # add to opened list
-                costs[neighbour] = (cost, field)
+                costs[neighbour] = (cost, node)
                 bisect.insort(queue, (cost, neighbour))
                 opened.add(neighbour)
 
@@ -166,12 +165,12 @@ def find_nearest_targets(src, target_getter,
     paths = []
     for destination, targets in destinations:
         path = []
-        field = destination
-        parent = costs[field][1]
+        node = destination
+        parent = costs[node][1]
         while parent:
-            path.append(field)
-            field = parent
-            parent = costs[field][1]
+            path.append(node)
+            node = parent
+            parent = costs[node][1]
         paths.append({'path': path, 'destination': destination,
                       'cost': costs[destination][0], 'targets': targets})
 

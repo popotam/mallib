@@ -21,6 +21,7 @@ MOCK_DIRECTIONS = (MockXYZ(1, 0, 0), MockXYZ(-1, 0, 0),
                    MockXYZ(0, 1, 0), MockXYZ(0, -1, 0))
 SIZE_X, SIZE_Y = 10, 10
 
+
 class MockField(object):
     def __init__(self, graph, x, y, passable, tags=None):
         self.x = x
