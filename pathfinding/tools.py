@@ -31,7 +31,7 @@ def export_to_json(entry_node, fp=None):
             if dst not in opened:
                 opened.add(dst)
                 queue.append(dst)
-            row[3].append(list(dst.xyz) + [connection.cost])
+            row[3].append(list(dst.xyz) + [int(connection.cost)])
         data.append(row)
 
     if fp is not None:
