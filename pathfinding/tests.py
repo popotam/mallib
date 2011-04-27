@@ -35,14 +35,14 @@ class MockField(object):
 
     @property
     def connections(self):
-        connections = {}
+        connections = []
         for direction in MOCK_DIRECTIONS:
             neighbor_xyz = MockXYZ(self.x + direction.x,
                                    self.y + direction.y, 0)
             neighbor_field = self.graph.get(neighbor_xyz)
             if neighbor_field:
                 cost = 1 if neighbor_field.passable else NOT_PASSABLE
-                connections[direction] = MockConnection(neighbor_field, cost)
+                connections.append(MockConnection(neighbor_field, cost))
         return connections
 
 
