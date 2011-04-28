@@ -107,11 +107,13 @@ class SwitchCycle(object):
         self.value += 1
         if self.value >= self.lenght:
             self.value = 0 if self.cycling else self.lenght - 1
+        return self
 
     def dec(self):
         self.value -= 1
         if self.value < 0:
             self.value = self.lenght - 1 if self.cycling else 0
+        return self
 
     def __call__(self):
         return self.value
