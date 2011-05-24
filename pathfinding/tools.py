@@ -14,7 +14,7 @@ import json
 import random
 
 
-def export_to_json(entry_node, fp=None, sample_size=10):
+def export_to_json(entry_node, fp=None, sample_size=10, only_passable=True):
     """Exports graph to JSON.
 
     Walks the graph starting from entry_node.
@@ -28,6 +28,8 @@ def export_to_json(entry_node, fp=None, sample_size=10):
         node = queue.pop()
         row = [node.xyz.x, node.xyz.y, node.xyz.z, []]
         for connection in node.connections:
+            if only_passable and not connection.cost:
+                continue
             dst = connection.destination
             if dst not in opened:
                 opened.add(dst)
