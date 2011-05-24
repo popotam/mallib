@@ -10,8 +10,11 @@ Copyright © 2011 Paweł Sobkowiak
 '''
 
 import json
+import logging
+from optparse import OptionParser
 import os
 import sys
+import time
 
 from finders import find_path
 from sample import SampleXYZ, SampleConnection, SampleNode
@@ -26,7 +29,15 @@ class SimpleGraph(dict):
         return self[xyz]
 
 
-def main(path):
+def find_all_paths(sample):
+    t0 = time.time()
+    for src in sample:
+        for dst in sample:
+            find_path(src, dst)
+    return time.time() - t0
+
+
+def main(path, repetitions):
     data = json.load(open(path))
     graph = SimpleGraph()
     for node_data in data['graph']:
@@ -37,17 +48,25 @@ def main(path):
             connection = SampleConnection(conn_node, conn_data[3])
             node.connections.append(connection)
     sample = [graph[SampleXYZ(*node)] for node in data['sample']]
-    import time
-    t0 = time.time()
-    find_path(sample[0], sample[-1])
-    print time.time() - t0
+    for index in range(repetitions):
+        print index, ':', find_all_paths(sample)
 
 if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print "Usage: %s <graph.json>" % sys.argv[0]
+    usage = "Usage: _performance.py [options] <graph.json>\n" + __doc__
+    parser = OptionParser(usage=usage)
+    parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
+                      help="log results for each path",
+                      default=False)
+    parser.add_option("-r", "--repetitions", type="int", dest="repetitions",
+                      help="how many times repeat the measurement", default=10)
+    (options, args) = parser.parse_args()
+    if options.verbose:
+        logging.basicConfig(level=logging.DEBUG)
+    if len(args) < 1:
+        parser.print_usage()
         sys.exit(1)
-    path = sys.argv[1]
+    path = args[0]
     if not os.path.exists(path):
         print "File: %s does not exist" % path
         sys.exit(1)
-    main(path)
+    main(path, options.repetitions)
