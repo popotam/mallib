@@ -13,20 +13,6 @@ import collections
 import json
 import random
 
-SampleXYZ = collections.namedtuple('MockXYZ', 'x y z')
-SampleConnection = collections.namedtuple('MockConnection', 'destination cost')
-
-
-class SampleNode(object):
-    def __init__(self, xyz, tags=None, connections=None):
-        self.xyz = xyz
-        self.tags = tags if tags is not None else set()
-        self.connections = connections if connections is not None else []
-
-
-class SampleGraph(dict):
-    pass
-
 
 def export_to_json(entry_node, fp=None, sample_size=10, only_passable=True):
     """Exports graph to JSON.

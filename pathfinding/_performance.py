@@ -13,12 +13,34 @@ import json
 import os
 import sys
 
+from finders import find_path
+from sample import SampleXYZ, SampleConnection, SampleNode
+
+
+class SimpleGraph(dict):
+    node_class = SampleNode
+
+    def get_or_create(self, xyz):
+        if xyz not in self:
+            self[xyz] = self.node_class(xyz)
+        return self[xyz]
+
 
 def main(path):
     data = json.load(open(path))
-    print data['graph'], data['sample']
-    raise RuntimeError("To be implemented")
-
+    graph = SimpleGraph()
+    for node_data in data['graph']:
+        xyz = SampleXYZ(*node_data[:3])
+        node = graph.get_or_create(xyz)
+        for conn_data in node_data[3]:
+            conn_node = graph.get_or_create(SampleXYZ(*conn_data[:3]))
+            connection = SampleConnection(conn_node, conn_data[3])
+            node.connections.append(connection)
+    sample = [graph[SampleXYZ(*node)] for node in data['sample']]
+    import time
+    t0 = time.time()
+    find_path(sample[0], sample[-1])
+    print time.time() - t0
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
