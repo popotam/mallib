@@ -14,44 +14,45 @@ import collections
 
 from constants import NOT_PASSABLE
 from finders import find_path, find_nearest_targets, NoPathFound
+from tools import SampleXYZ, SampleConnection, SampleNode, SampleGraph
 
-MockXYZ = collections.namedtuple('MockXYZ', 'x y z')
-MockConnection = collections.namedtuple('MockConnection', 'destination cost')
-MOCK_DIRECTIONS = (MockXYZ(1, 0, 0), MockXYZ(-1, 0, 0),
-                   MockXYZ(0, 1, 0), MockXYZ(0, -1, 0))
+MOCK_DIRECTIONS = (SampleXYZ(1, 0, 0), SampleXYZ(-1, 0, 0),
+                   SampleXYZ(0, 1, 0), SampleXYZ(0, -1, 0))
 SIZE_X, SIZE_Y = 10, 10
 
 
-class MockField(object):
+class MockNode(SampleNode):
     def __init__(self, graph, x, y, passable, tags=None):
-        self.x = x
-        self.y = y
+        xyz = SampleXYZ(x, y, 0)
+        super(MockNode, self).__init__(xyz, tags)
         self.passable = passable
         self.graph = graph
-        self.tags = tags if tags is not None else set()
-        self.connections = []
-
-    @property
-    def xyz(self):
-        return MockXYZ(self.x, self.y, 0)
 
     def generate_connections(self):
         self.connections = []
         for direction in MOCK_DIRECTIONS:
-            neighbor_xyz = MockXYZ(self.x + direction.x,
-                                   self.y + direction.y, 0)
+            neighbor_xyz = SampleXYZ(self.x + direction.x,
+                                     self.y + direction.y, 0)
             neighbor_field = self.graph.get(neighbor_xyz)
             if neighbor_field:
                 cost = 1 if neighbor_field.passable else NOT_PASSABLE
-                self.connections.append(MockConnection(neighbor_field, cost))
+                self.connections.append(SampleConnection(neighbor_field, cost))
         return self.connections
 
+    @property
+    def x(self):
+        return self.xyz.x
 
-class MockGraph(dict):
+    @property
+    def y(self):
+        return self.xyz.y
+
+
+class MockGraph(SampleGraph):
     def __init__(self):
         for x in xrange(SIZE_X):
             for y in xrange(SIZE_Y):
-                self[MockXYZ(x, y, 0)] = MockField(self, x, y, True)
+                self[SampleXYZ(x, y, 0)] = MockNode(self, x, y, True)
         # set some unpassable fields
         self[8, 0, 0].passable = False
         self[8, 1, 0].passable = False
