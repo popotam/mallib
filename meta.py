@@ -12,8 +12,21 @@ Copyright © 2011 Paweł Sobkowiak
 import collections
 import inspect
 
+
+class MarkJournal(collections.defaultdict):
+    def __init__(self):
+        super(MarkJournal, self).__init__(lambda: collections.defaultdict(int))
+
+    def print_all_counters(self):
+        for label in self:
+            self.print_counter(label)
+
+    def print_counter(self, label):
+        for counter, count in self[label].iteritems():
+            print label, counter, count
+
 # a module global to hold @mark decorator findings
-MARK = collections.defaultdict(lambda: collections.defaultdict(int))
+MARK = MarkJournal()
 
 
 def mark(label=None, journal=MARK, enable=True):
