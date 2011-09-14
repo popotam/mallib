@@ -28,7 +28,8 @@ class Settings(object):
     def __init__(self):
         self.logger = logging.getLogger(self.logger_name)
         self.random = random.Random()
-        self.reload()
+        self._load()
+        self._seed()
 
     def _load(self):
         self.logger.info("Loading %s settings...", self.settings_name)
@@ -42,32 +43,17 @@ class Settings(object):
             raise ConfigError(message, e)
 
     def _seed(self):
-        if self.get('RANDOM_SEED') is None:
-            self.set('RANDOM_SEED', random.randint(0, 999999999))
-        seed = self.get('RANDOM_SEED')
+        if getattr(self, 'RANDOM_SEED', None) is None:
+            self.RANDOM_SEED = random.randint(0, 999999999)
+        seed = self.RANDOM_SEED
         self.random.seed(seed)
         self.logger.info('Using %i as random seed for %s',
                          seed, self.settings_name)
-
-    def get(self, attr, default=None):
-        try:
-            return getattr(self, attr)
-        except AttributeError:
-            return default
-
-    def set(self, attr, value):
-        setattr(self, attr, value)
 
     def reload(self, reseed=True):
         # preserve logger and current random generator
         self.__dict__ = {'logger': self.logger,
                          'random': self.random}
-        # copy default settings to instance
-        # (it will be available in settings files)
-        defaults = dict((key, copy.deepcopy(value))
-                        for key, value in self.__class__.__dict__.items()
-                        if isinstance(key, str) and key[0].isupper())
-        self.__dict__.update(defaults)
         self._load()
         if reseed:
             self._seed()
