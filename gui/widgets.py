@@ -172,9 +172,12 @@ class UpdatedLabel(pyglet.text.Label):
 
 
 class Camera2D(object):
-    def __init__(self, parent, x=0, y=0, target=None, locked=False):
+    def __init__(self, parent, x=0, y=0, target=None, locked=False,
+                 min_zoom=0.25, max_zoom=2.0):
         self.parent = parent
         self._zoom_quantifier = 10.0  # 100%
+        self.min_zoom = 10.0 / (min_zoom ** 0.5)
+        self.max_zoom = 10.0 / (max_zoom ** 0.5)
         self.x = x
         self.y = y
         self.target = target
@@ -251,14 +254,14 @@ class Camera2D(object):
         self.become_free()
 
     def _zoom_scroll(self, scroll_x, scroll_y):
-        self._zoom_quantifier += scroll_y / 5.0
+        self._zoom_quantifier -= scroll_y / 5.0
         self._check_bounds()
 
     def _check_bounds(self):
-        if self._zoom_quantifier < 7.0:
-            self._zoom_quantifier = 7.0
-        elif self._zoom_quantifier > 20.0:
-            self._zoom_quantifier = 20.0
+        if self._zoom_quantifier < self.max_zoom:
+            self._zoom_quantifier = self.max_zoom
+        elif self._zoom_quantifier > self.min_zoom:
+            self._zoom_quantifier = self.min_zoom
 
     def _update_free(self):
         if self.zoom_in:

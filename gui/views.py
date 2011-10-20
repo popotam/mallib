@@ -40,6 +40,7 @@ class View(object):
         self.window.pop_handlers()
         self.window.pop_handlers()
         self.window.pop_handlers()
+        self.window.pop_handlers()
 
     def update(self, df):
         pass

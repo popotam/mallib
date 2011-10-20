@@ -9,7 +9,6 @@ Copyright © 2011 Paweł Sobkowiak
 
 '''
 
-import copy
 import glob
 import random
 import logging
