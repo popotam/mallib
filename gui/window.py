@@ -46,6 +46,7 @@ class MalWindow(pyglet.window.Window):
         self.views = []
         self.views_switch = malwidgets.PointingSwitchCycle(self, 'views')
         #self.switch_view(self.views_switch())
+        self.resources = {}
 
     def switch_view(self, new_view):
         if self.current_view:
