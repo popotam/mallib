@@ -9,7 +9,10 @@ Copyright © 2011 Paweł Sobkowiak. All rights reserved.
 
 '''
 
+from pyglet.gl import *
 import pyglet.text
+from pyglet.window import key
+from pyglet.window import mouse
 
 
 class Switch(object):
@@ -166,3 +169,121 @@ class UpdatedLabel(pyglet.text.Label):
                 text = self.update_func(self.update_object)
                 if self.text != text:
                     self.text = text
+
+
+class Camera2D(object):
+    def __init__(self, parent, x=0, y=0, target=None, locked=False):
+        self.parent = parent
+        self._zoom_quantifier = 10.0  # 100%
+        self.x = x
+        self.y = y
+        self.target = target
+        self.zoom_in = Switch(False)
+        self.zoom_out = Switch(False)
+        self.move_left = Switch(False)
+        self.move_right = Switch(False)
+        self.move_up = Switch(False)
+        self.move_down = Switch(False)
+        if locked:
+            self.update = self._update_locked
+        else:
+            self.update = self._update_free
+
+    def become_locked(self):
+        self.update = self._update_locked
+
+    def become_free(self):
+        self.update = self._update_free
+
+    @property
+    def zoom(self):
+        return 100.0 / (self._zoom_quantifier ** 2)
+
+    def transform_scene(self):
+        zoom = self.zoom
+        # move to the center of the window
+        glTranslatef(self.parent.window.width / 2.0,
+                     self.parent.window.height / 2.0,
+                     0.0)
+        glScalef(zoom, zoom, 1.0)
+        glTranslatef(-self.x, -self.y, 0.0)
+
+    def on_key_press(self, symbol, modifiers):
+        if symbol == key.Z:
+            self.zoom_in.on()
+        elif symbol == key.X:
+            self.zoom_out.on()
+        elif symbol == key.A:
+            self.move_left.on()
+        elif symbol == key.D:
+            self.move_right.on()
+        elif symbol == key.W:
+            self.move_up.on()
+        elif symbol == key.S:
+            self.move_down.on()
+        elif symbol == key.F:
+            self.become_locked()
+
+    def on_key_release(self, symbol, modifiers):
+        if symbol == key.Z:
+            self.zoom_in.off()
+        elif symbol == key.X:
+            self.zoom_out.off()
+        elif symbol == key.A:
+            self.move_left.off()
+        elif symbol == key.D:
+            self.move_right.off()
+        elif symbol == key.W:
+            self.move_up.off()
+        elif symbol == key.S:
+            self.move_down.off()
+
+    def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
+        if button == mouse.RIGHT:
+            self._drag_move(dx, dy)
+
+    def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
+        self._zoom_scroll(scroll_x, scroll_y)
+
+    def _drag_move(self, dx, dy):
+        self.x -= 2.0 * dx / self.zoom
+        self.y -= 2.0 * dy / self.zoom
+        self.become_free()
+
+    def _zoom_scroll(self, scroll_x, scroll_y):
+        self._zoom_quantifier += scroll_y / 5.0
+        self._check_bounds()
+
+    def _check_bounds(self):
+        if self._zoom_quantifier < 7.0:
+            self._zoom_quantifier = 7.0
+        elif self._zoom_quantifier > 20.0:
+            self._zoom_quantifier = 20.0
+
+    def _update_free(self):
+        if self.zoom_in:
+            self._zoom_quantifier += 0.25
+        if self.zoom_out:
+            self._zoom_quantifier -= 0.25
+        if self.move_left:
+            self.x -= 20.0 / self.zoom
+        if self.move_right:
+            self.x += 20.0 / self.zoom
+        if self.move_up:
+            self.y += 20.0 / self.zoom
+        if self.move_down:
+            self.y -= 20.0 / self.zoom
+        self._check_bounds()
+
+    def _update_locked(self):
+        if self.zoom_in:
+            self._zoom_quantifier += 0.25
+        if self.zoom_out:
+            self._zoom_quantifier -= 0.25
+        if self.target:
+            x, y = self.target.position
+            self.x = round(max(min(self.x, x + 75.0), x - 75.0))
+            self.y = round(max(min(self.y, y + 75.0), y - 75.0))
+        if self.move_left or self.move_right or self.move_up or self.move_down:
+            self.become_free()
+        self._check_bounds()
