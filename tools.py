@@ -14,12 +14,12 @@ import random
 from time import time
 from itertools import tee, izip, izip_longest, chain
 
-import ordered_dict
 import ordered_set
 
 if hasattr(collections, 'OrderedDict'):
     OrderedDict = collections.OrderedDict
 else:
+    import ordered_dict
     OrderedDict = ordered_dict.OrderedDict
 
 OrderedSet = ordered_set.OrderedSet

@@ -125,7 +125,7 @@ class HexFractalGenerator(BaseFractalGenerator):
 
         width = 2 ** size + 1
         last = width - 1
-        edge = (width + 1) / 2
+        edge = int((width + 1) / 2)
 
         if island:
             self._grain[P(last // 2, last // 2)] = self._grain.middle_grain()
