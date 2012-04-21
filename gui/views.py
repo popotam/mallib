@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-u'''Views.
+'''Views.
 
 mallib: common library for mal projects
 @author: Pawel Sobkowiak

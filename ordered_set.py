@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-u'''OrderedSet from recipe.
+'''OrderedSet from recipe.
 
 mallib: common library for mal projects
 @author: Paweł Sobkowiak

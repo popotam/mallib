@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-u'''Tools and exporters for pathfinding.
+'''Tools and exporters for pathfinding.
 
 mallib: common library for mal projects
 @author: Paweł Sobkowiak

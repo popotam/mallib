@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-u'''Finder functions.
+'''Finder functions.
 
 mallib: common library for mal projects
 @author: Paweł Sobkowiak

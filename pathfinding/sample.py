@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-u'''Sample minimal implementations of pathfinding primitives.
+'''Sample minimal implementations of pathfinding primitives.
 
 mallib: common library for mal projects
 @author: Paweł Sobkowiak

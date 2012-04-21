@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-u'''Memory usage profiling code.
+'''Memory usage profiling code.
 
 mallib: common library for mal projects
 @author: Paweł Sobkowiak

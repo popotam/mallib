@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-u'''Tools.
+'''Tools.
 
 mallib: meta decorators for refactoring etc.
 @author: Paweł Sobkowiak

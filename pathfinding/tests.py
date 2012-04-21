@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-u'''Tests.
+'''Tests.
 
 mallib: common library for mal projects
 @author: Paweł Sobkowiak
