@@ -37,6 +37,7 @@ def export_to_json(entry_node, fp=None, sample_size=10, only_passable=True):
             row[3].append([dst.xyz.x, dst.xyz.y, dst.xyz.z,
                            int(connection.cost)])
         graph.append(row)
+    del node
     opened = list(opened)
     sample = random.sample(opened, min(len(opened), sample_size))
     sample = [list(node.xyz) for node in sample]

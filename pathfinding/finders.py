@@ -11,6 +11,7 @@ Copyright © 2011 Paweł Sobkowiak
 
 import bisect
 import logging
+import heapq
 from time import time
 
 from constants import NOT_PASSABLE
@@ -84,6 +85,91 @@ def find_path(src, dst, max_nodes_checked=1000000):
                 heuristic = (abs(x - dx) + abs(y - dy) + abs(z - dz))
                 costs[neighbour] = (cost, heuristic, node)
                 bisect.insort(queue, (cost + heuristic, cost, neighbour))
+                opened.add(neighbour)
+
+    if success is None:
+        logger.error("No path found - opened list empty - find_path(%s, %s)",
+                     src, dst)
+        raise NoPathFound("opened list empty - find_path(%s, %s)"
+                          % (src, dst))
+
+    # backtracing path
+    path = []
+    parent = costs[node][2]
+    while parent:
+        path.append(node)
+        node = parent
+        parent = costs[node][2]
+
+    # calculating stats
+    total_cost = costs[dst][0] if success else -1
+    calculation_time = time() - start_time
+    logger.debug("astar %.3f %s->%s lenght=%i closed=%i total_cost=%i heur=%i",
+                 calculation_time, src.xyz, dst.xyz, len(path),
+                 len(closed), total_cost, costs[src][1])
+    return path
+
+
+def find_path_queue(src, dst, max_nodes_checked=1000000):
+    """ Implementation of A* algorithm """
+    global logger
+    if src == dst:
+        return []
+    success = None
+    start_time = time()
+
+    heappush = heapq.heappush
+    heappop = heapq.heappop
+
+    dx, dy, dz = dst.xyz
+    x, y, z = src.xyz
+    heuristic = (abs(x - dx) + abs(y - dy) + abs(z - dz))
+    ### costs = { node: (g, h, parent), ... }
+    costs = {src: (0, heuristic, None)}
+    ### queue = [(g + h, g, node), ...]
+    queue = []
+    heappush(queue, (heuristic, 0, src))
+    opened = set([src])
+    closed = set()
+
+    while queue:
+        node_f, node_g, node = heappop(queue)
+        # optimalization - it is better to check if node is already
+        # in closed list, than to remove touple from queue list
+        if node in closed:
+            continue
+
+        # check if destination has been achieved
+        if node == dst:
+            success = True
+            break
+        elif len(closed) > max_nodes_checked:
+            success = False
+            break
+
+        # move node to closed list
+        opened.remove(node)
+        closed.add(node)
+
+        # check every neighbouring nodes
+        for connection in node.connections:
+            cost = connection.cost
+            neighbour = connection.destination
+            if cost == NOT_PASSABLE or neighbour in closed:
+                continue
+            cost += node_g
+            if neighbour in opened:
+                old_g, h, parent = costs[neighbour]
+                if cost < old_g:
+                    # update node cost
+                    costs[neighbour] = (cost, h, node)
+                    heappush(queue, (cost + h, cost, neighbour))
+            else:
+                # add node to opened list
+                x, y, z = neighbour.xyz
+                heuristic = (abs(x - dx) + abs(y - dy) + abs(z - dz))
+                costs[neighbour] = (cost, heuristic, node)
+                heappush(queue, (cost + heuristic, cost, neighbour))
                 opened.add(neighbour)
 
     if success is None:

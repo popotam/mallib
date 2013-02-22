@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''Performance framework for pathfinding.
+u'''Performance framework for pathfinding.
 
 mallib: common library for mal projects
 @author: Paweł Sobkowiak
@@ -16,8 +16,13 @@ import os
 import sys
 import time
 
-from finders import find_path
+from finders import find_path, find_path_queue
 from sample import SampleXYZ, SampleConnection, SampleNode
+
+FIND_FUNCTIONS = {
+    'find_path': find_path,
+    'find_path_queue': find_path_queue,
+}
 
 
 class SimpleGraph(dict):
@@ -29,15 +34,16 @@ class SimpleGraph(dict):
         return self[xyz]
 
 
-def find_all_paths(sample):
+def find_all_paths(sample, find_func):
     t0 = time.time()
     for src in sample:
         for dst in sample:
-            find_path(src, dst)
+            find_path_queue(src, dst)
     return time.time() - t0
 
 
-def main(path, repetitions):
+def main(path, repetitions, find_func):
+    find_func = FIND_FUNCTIONS[find_func]
     data = json.load(open(path))
     graph = SimpleGraph()
     for node_data in data['graph']:
@@ -49,7 +55,7 @@ def main(path, repetitions):
             node.connections.append(connection)
     sample = [graph[SampleXYZ(*node)] for node in data['sample']]
     for index in range(repetitions):
-        print index, ':', find_all_paths(sample)
+        print index, ':', find_all_paths(sample, find_func)
 
 if __name__ == '__main__':
     usage = "Usage: _performance.py [options] <graph.json>\n" + __doc__
@@ -59,7 +65,14 @@ if __name__ == '__main__':
                       default=False)
     parser.add_option("-r", "--repetitions", type="int", dest="repetitions",
                       help="how many times repeat the measurement", default=10)
+    parser.add_option("-f", "--find-function", type="str", dest="find_func",
+                      help="choose find function implementation {}".format(
+                            FIND_FUNCTIONS.keys()),
+                      default="find_path")
     (options, args) = parser.parse_args()
+    if options.find_func not in FIND_FUNCTIONS:
+        print "Incorrect find function."
+        parser.print_help()
     if options.verbose:
         logging.basicConfig(level=logging.DEBUG)
     if len(args) < 1:
@@ -69,4 +82,4 @@ if __name__ == '__main__':
     if not os.path.exists(path):
         print "File: %s does not exist" % path
         sys.exit(1)
-    main(path, options.repetitions)
+    main(path, options.repetitions, options.find_func)
