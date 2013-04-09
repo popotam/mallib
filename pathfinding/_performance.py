@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-u'''Performance framework for pathfinding.
+'''Performance framework for pathfinding.
 
 mallib: common library for mal projects
 @author: Paweł Sobkowiak
@@ -60,7 +60,8 @@ def main(path, repetitions, find_func):
         print(index, ':', find_all_paths(sample, find_func))
 
 if __name__ == '__main__':
-    usage = "Usage: _performance.py [options] <graph.json>\n" + __doc__
+    usage = (u"Usage: _performance.py [options] <graph.json>\n"
+             + unicode(__doc__, "utf-8"))
     parser = OptionParser(usage=usage)
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
                       help="log results for each path",
