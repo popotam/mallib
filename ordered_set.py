@@ -9,6 +9,8 @@ Copyright © 2011 Paweł Sobkowiak
 
 '''
 
+from __future__ import print_function
+
 from collections import MutableSet
 
 KEY, PREV, NEXT = range(3)

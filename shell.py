@@ -9,6 +9,8 @@ Copyright © 2011 Paweł Sobkowiak
 
 '''
 
+from __future__ import print_function
+
 from distutils.version import LooseVersion
 
 
@@ -27,4 +29,4 @@ def interactive_shell(namespace):
                     user_ns=namespace)
             ipshell()
     except ImportError:
-        print "Unable to enter interactive mode - could not import ipython"
+        print("Unable to enter interactive mode - could not import ipython")

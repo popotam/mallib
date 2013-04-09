@@ -9,6 +9,8 @@ Copyright © 2011 Paweł Sobkowiak
 
 '''
 
+from __future__ import print_function
+
 
 def test_mark_function():
     from meta import MARK, mark
@@ -18,7 +20,7 @@ def test_mark_function():
         return a + b
 
     adder(2, 2)
-    print MARK
+    print(MARK)
     assert MARK['test']['mallib.tests:adder'] == 1
 
 
@@ -31,7 +33,7 @@ def test_mark_method():
             return a + b
 
     Adder().adder_method(2, 2)
-    print MARK
+    print(MARK)
     assert MARK['test']['mallib.tests.Adder:adder_method'] == 1
 
 
@@ -45,8 +47,8 @@ def test_mark_other_journal():
         return a + b
 
     adder_other_journal(2, 2)
-    print MARK
-    print journal
+    print(MARK)
+    print(journal)
     assert MARK['test']['mallib.tests:adder_other_journal'] == 0
     assert journal['test']['mallib.tests:adder_other_journal'] == 1
 
@@ -59,5 +61,5 @@ def test_mark_disabled():
         return a + b
 
     add_disabled(2, 2)
-    print MARK
+    print(MARK)
     assert MARK['test']['mallib.tests:add_disabled'] == 0

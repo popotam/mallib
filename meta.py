@@ -9,6 +9,8 @@ Copyright © 2011 Paweł Sobkowiak
 
 '''
 
+from __future__ import print_function
+
 import collections
 import inspect
 
@@ -23,7 +25,7 @@ class MarkJournal(collections.defaultdict):
 
     def print_counter(self, label):
         for counter, count in self[label].iteritems():
-            print label, counter, count
+            print(label, counter, count)
 
 # a module global to hold @mark decorator findings
 MARK = MarkJournal()

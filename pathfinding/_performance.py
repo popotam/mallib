@@ -9,6 +9,8 @@ Copyright © 2011 Paweł Sobkowiak
 
 '''
 
+from __future__ import print_function
+
 import json
 import logging
 from optparse import OptionParser
@@ -55,7 +57,7 @@ def main(path, repetitions, find_func):
             node.connections.append(connection)
     sample = [graph[SampleXYZ(*node)] for node in data['sample']]
     for index in range(repetitions):
-        print index, ':', find_all_paths(sample, find_func)
+        print(index, ':', find_all_paths(sample, find_func))
 
 if __name__ == '__main__':
     usage = "Usage: _performance.py [options] <graph.json>\n" + __doc__
@@ -71,7 +73,7 @@ if __name__ == '__main__':
                       default="find_path")
     (options, args) = parser.parse_args()
     if options.find_func not in FIND_FUNCTIONS:
-        print "Incorrect find function."
+        print("Incorrect find function.")
         parser.print_help()
     if options.verbose:
         logging.basicConfig(level=logging.DEBUG)
@@ -80,6 +82,6 @@ if __name__ == '__main__':
         sys.exit(1)
     path = args[0]
     if not os.path.exists(path):
-        print "File: %s does not exist" % path
+        print("File: %s does not exist" % path)
         sys.exit(1)
     main(path, options.repetitions, options.find_func)
