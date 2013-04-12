@@ -8,11 +8,12 @@ mallib: common library for mal projects
 Copyright © 2011 Paweł Sobkowiak
 
 '''
+from __future__ import absolute_import, division, print_function
 
 import random
 from collections import namedtuple, defaultdict
 
-import tools
+from . import tools
 
 P = Point = namedtuple('Point', 'x y')
 

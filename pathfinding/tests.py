@@ -8,12 +8,13 @@ mallib: common library for mal projects
 Copyright © 2011 Paweł Sobkowiak
 
 '''
+from __future__ import absolute_import, division, print_function
 
 import unittest
 
-from constants import NOT_PASSABLE
-from finders import find_path, find_nearest_targets, NoPathFound
-from sample import SampleXYZ, SampleConnection, SampleNode
+from .constants import NOT_PASSABLE
+from .finders import find_path, find_nearest_targets, NoPathFound
+from .sample import SampleXYZ, SampleConnection, SampleNode
 
 MOCK_DIRECTIONS = (SampleXYZ(1, 0, 0), SampleXYZ(-1, 0, 0),
                    SampleXYZ(0, 1, 0), SampleXYZ(0, -1, 0))

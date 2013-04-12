@@ -8,8 +8,7 @@ mallib: common library for mal projects
 Copyright © 2011 Paweł Sobkowiak
 
 '''
-
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 
 def check_memory():

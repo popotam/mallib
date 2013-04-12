@@ -8,12 +8,11 @@ mallib: common library for mal projects
 Copyright © 2011 Paweł Sobkowiak
 
 '''
-
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 
 def test_mark_function():
-    from meta import MARK, mark
+    from .meta import MARK, mark
 
     @mark('test')
     def adder(a, b):
@@ -25,7 +24,7 @@ def test_mark_function():
 
 
 def test_mark_method():
-    from meta import MARK, mark
+    from .meta import MARK, mark
 
     class Adder(object):
         @mark('test')
@@ -38,7 +37,7 @@ def test_mark_method():
 
 
 def test_mark_other_journal():
-    from meta import MARK, mark
+    from .meta import MARK, mark
     import collections
     journal = collections.defaultdict(lambda: collections.defaultdict(int))
 
@@ -54,7 +53,7 @@ def test_mark_other_journal():
 
 
 def test_mark_disabled():
-    from meta import MARK, mark
+    from .meta import MARK, mark
 
     @mark('test', enable=False)
     def add_disabled(a, b):

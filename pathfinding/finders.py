@@ -8,13 +8,14 @@ mallib: common library for mal projects
 Copyright © 2011 Paweł Sobkowiak
 
 '''
+from __future__ import absolute_import, division, print_function
 
 import bisect
 import logging
 import heapq
 from time import time
 
-from constants import NOT_PASSABLE
+from .constants import NOT_PASSABLE
 
 logger = logging.getLogger('malpath')
 
@@ -29,7 +30,7 @@ class NoPathFound(Exception):
 #    return abs(x1 - x2) + abs(y1 - y2) + abs(z1 - z2)
 
 
-def find_path(src, dst, max_nodes_checked=1000000):
+def find_path_bisect_insort(src, dst, max_nodes_checked=1000000):
     """ Implementation of A* algorithm """
     global logger
     if src == dst:
@@ -50,7 +51,7 @@ def find_path(src, dst, max_nodes_checked=1000000):
     while queue:
         node_f, node_g, node = queue.pop(0)
         # optimalization - it is better to check if node is already
-        # in closed list, than to remove touple from queue list
+        # in closed list, than to remove tuple from queue list
         if node in closed:
             continue
 
@@ -110,7 +111,7 @@ def find_path(src, dst, max_nodes_checked=1000000):
     return path
 
 
-def find_path_queue(src, dst, max_nodes_checked=1000000):
+def find_path_heapq(src, dst, max_nodes_checked=1000000):
     """ Implementation of A* algorithm """
     global logger
     if src == dst:
@@ -135,7 +136,7 @@ def find_path_queue(src, dst, max_nodes_checked=1000000):
     while queue:
         node_f, node_g, node = heappop(queue)
         # optimalization - it is better to check if node is already
-        # in closed list, than to remove touple from queue list
+        # in closed list, than to remove tuple from queue list
         if node in closed:
             continue
 
@@ -265,3 +266,6 @@ def find_nearest_targets(src, target_getter,
     logger.debug("dijkstra %.3f from %s paths_found=%i closed_list=%i",
             calculation_time, src.xyz, len(paths), len(closed))
     return paths
+
+
+find_path = find_path_bisect_insort

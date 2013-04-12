@@ -8,6 +8,7 @@ Malsimulation: Malleable World Simulator
 Copyright © 2011 Paweł Sobkowiak
 
 '''
+from __future__ import absolute_import, division, print_function
 
 from math import sqrt
 from itertools import izip

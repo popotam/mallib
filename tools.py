@@ -8,18 +8,19 @@ mallib: common library for mal projects
 Copyright © 2011 Paweł Sobkowiak
 
 '''
+from __future__ import absolute_import, division, print_function
 
 import collections
 import random
 from time import time
 from itertools import tee, izip, izip_longest, chain
 
-import ordered_set
+from . import ordered_set
 
 if hasattr(collections, 'OrderedDict'):
     OrderedDict = collections.OrderedDict
 else:
-    import ordered_dict
+    from . import ordered_dict
     OrderedDict = ordered_dict.OrderedDict
 
 OrderedSet = ordered_set.OrderedSet

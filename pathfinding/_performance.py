@@ -8,8 +8,7 @@ mallib: common library for mal projects
 Copyright © 2011 Paweł Sobkowiak
 
 '''
-
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import json
 import logging
@@ -18,12 +17,14 @@ import os
 import sys
 import time
 
-from finders import find_path, find_path_queue
-from sample import SampleXYZ, SampleConnection, SampleNode
+from mallib.pathfinding.finders import (
+    find_path, find_path_bisect_insort, find_path_heapq)
+from mallib.pathfinding.sample import SampleXYZ, SampleConnection, SampleNode
 
 FIND_FUNCTIONS = {
     'find_path': find_path,
-    'find_path_queue': find_path_queue,
+    'find_path_bisect_insort': find_path_bisect_insort,
+    'find_path_heapq': find_path_heapq,
 }
 
 
@@ -40,7 +41,7 @@ def find_all_paths(sample, find_func):
     t0 = time.time()
     for src in sample:
         for dst in sample:
-            find_path_queue(src, dst)
+            find_func(src, dst)
     return time.time() - t0
 
 
@@ -60,8 +61,7 @@ def main(path, repetitions, find_func):
         print(index, ':', find_all_paths(sample, find_func))
 
 if __name__ == '__main__':
-    usage = (u"Usage: _performance.py [options] <graph.json>\n"
-             + unicode(__doc__, "utf-8"))
+    usage = ("Usage: _performance.py [options] <graph.json>\n" + __doc__)
     parser = OptionParser(usage=usage)
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
                       help="log results for each path",
