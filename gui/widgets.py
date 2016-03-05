@@ -127,7 +127,7 @@ class PointingSwitchCycle(SwitchCycle):
     def __init__(self, parent, list_name, state=0, cycling=True):
         self.parent = parent
         self.list_name = list_name
-        SwitchCycle.__init__(self, self.lenght, state, cycling)
+        super(PointingSwitchCycle, self).__init__(self.lenght, state, cycling)
 
     def __call__(self):
         return getattr(self.parent, self.list_name)[self.value]
