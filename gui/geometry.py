@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''Module for 3D geometry manipulation.
+"""Module for 3D geometry manipulation.
 
 Malsimulation: Malleable World Simulator
 @author: Paweł Sobkowiak
 @contact: pawel.sobkowiak@gmail.com
 Copyright © 2011 Paweł Sobkowiak
 
-'''
+"""
 from __future__ import absolute_import, division, print_function
 
 from math import sqrt

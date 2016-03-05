@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''Finder functions.
+"""Finder functions.
 
 mallib: common library for mal projects
 @author: Paweł Sobkowiak
 @contact: pawel.sobkowiak@gmail.com
 Copyright © 2011 Paweł Sobkowiak
 
-'''
+"""
 from __future__ import absolute_import, division, print_function
 
 import bisect
@@ -45,7 +45,7 @@ def find_path_bisect_insort(src, dst, max_nodes_checked=1000000):
     costs = {src: (0, heuristic, None)}
     ### queue = [(g + h, g, node), ...]
     queue = [(heuristic, 0, src)]
-    opened = set([src])
+    opened = {src}
     closed = set()
 
     while queue:
@@ -130,7 +130,7 @@ def find_path_heapq(src, dst, max_nodes_checked=1000000):
     ### queue = [(g + h, g, node), ...]
     queue = []
     heappush(queue, (heuristic, 0, src))
-    opened = set([src])
+    opened = {src}
     closed = set()
 
     while queue:
@@ -208,7 +208,7 @@ def find_nearest_targets(src, target_getter,
 
     costs = {src: (0, None)}
     queue = [(0, src)]
-    opened = set([src])
+    opened = {src}
     closed = set()
     while queue:
         node_cost, node = queue.pop(0)
