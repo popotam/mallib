@@ -16,13 +16,6 @@ from time import time
 from itertools import tee, izip, izip_longest, chain
 
 from . import ordered_set
-
-if hasattr(collections, 'OrderedDict'):
-    OrderedDict = collections.OrderedDict
-else:
-    from . import ordered_dict
-    OrderedDict = ordered_dict.OrderedDict
-
 OrderedSet = ordered_set.OrderedSet
 
 ####################### FUNCTIONS #######################
