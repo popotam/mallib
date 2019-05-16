@@ -17,8 +17,7 @@ import mallib.gui.widgets as malwidgets
 
 
 def get_best_config(**kwargs):
-    platform = pyglet.window.get_platform()
-    display = platform.get_default_display()
+    display = pyglet.canvas.get_display()
     screen = display.get_default_screen()
     template = pyglet.gl.Config(**kwargs)
     try:
