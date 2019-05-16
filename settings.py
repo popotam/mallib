@@ -34,7 +34,7 @@ class Settings(object):
         self.logger.info("Loading %s settings...", self.settings_name)
         try:
             for each_file in sorted(glob.glob(self.settings_filenames)):
-                execfile(each_file, self.globals, self.__dict__)
+                exec(compile(open(each_file).read(), each_file, 'exec'), self.globals, self.__dict__)
         except Exception as e:
             message = ("%s settings file '%s' is corrupted"
                        % (self.settings_name, each_file))

@@ -12,7 +12,7 @@ Copyright © 2011 Paweł Sobkowiak
 import random
 from collections import namedtuple, defaultdict
 
-import tools
+from . import tools
 
 P = Point = namedtuple('Point', 'x y')
 
@@ -129,7 +129,7 @@ class HexFractalGenerator(BaseFractalGenerator):
 
         if island:
             self._grain[P(last // 2, last // 2)] = self._grain.middle_grain()
-            for i in xrange(edge):
+            for i in range(edge):
                 self._grain[P(i, 0)] = self._grain.border_grain()
                 self._grain[P(0, i)] = self._grain.border_grain()
                 self._grain[P(last - i, last)] = self._grain.border_grain()
@@ -164,7 +164,7 @@ class HexFractalGenerator(BaseFractalGenerator):
         # to enable hex shaped board
         size = self.size - 1
         width = 2 ** size + 1
-        for step in xrange(size):
+        for step in range(size):
             factor = ratio ** step
             edge_size = (width - 1) // (2 ** step)
             for point in self._point_iterator():
@@ -204,7 +204,7 @@ class SquareDiamondFractalGenerator(BaseFractalGenerator):
             width = 2 ** size + 1
             middle = 2 ** (size - 1)
             self._grain[P(middle, middle)] = self._grain.middle_grain()
-            for i in xrange(width):
+            for i in range(width):
                 self._grain[P(i, width - 1)] = self._grain.border_grain()
                 self._grain[P(width - 1, i)] = self._grain.border_grain()
                 self._grain[P(i, 0)] = self._grain.border_grain()
@@ -218,8 +218,8 @@ class SquareDiamondFractalGenerator(BaseFractalGenerator):
         Iterator over every field in fractal
         """
         width = 2 ** self.size + 1
-        for x in xrange(width):
-            for y in xrange(width):
+        for x in range(width):
+            for y in range(width):
                 yield P(x, y)
 
     def _avg_diamond_vals(self, i, j, stride, sub_size):

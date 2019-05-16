@@ -12,14 +12,14 @@ Copyright © 2011 Paweł Sobkowiak
 import collections
 import random
 from time import time
-from itertools import tee, izip, izip_longest, chain
+from itertools import tee, zip_longest, chain
 
-import ordered_set
+from . import ordered_set
 
 if hasattr(collections, 'OrderedDict'):
     OrderedDict = collections.OrderedDict
 else:
-    import ordered_dict
+    from . import ordered_dict
     OrderedDict = ordered_dict.OrderedDict
 
 OrderedSet = ordered_set.OrderedSet
@@ -49,13 +49,13 @@ def pairwise(iterable):
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
     a, b = tee(iterable)
     next(b, None)
-    return izip(a, b)
+    return zip(a, b)
 
 
 def grouper(n, iterable, fillvalue=None):
     "grouper(3, 'ABCDEFG', 'x') --> ABC DEF Gxx"
     args = [iter(iterable)] * n
-    return izip_longest(fillvalue=fillvalue, *args)
+    return zip_longest(fillvalue=fillvalue, *args)
 
 
 def make_seed(randgen=None):

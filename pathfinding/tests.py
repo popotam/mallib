@@ -11,9 +11,9 @@ Copyright © 2011 Paweł Sobkowiak
 
 import unittest
 
-from constants import NOT_PASSABLE
-from finders import find_path, find_nearest_targets, NoPathFound
-from sample import SampleXYZ, SampleConnection, SampleNode
+from .constants import NOT_PASSABLE
+from .finders import find_path, find_nearest_targets, NoPathFound
+from .sample import SampleXYZ, SampleConnection, SampleNode
 
 MOCK_DIRECTIONS = (SampleXYZ(1, 0, 0), SampleXYZ(-1, 0, 0),
                    SampleXYZ(0, 1, 0), SampleXYZ(0, -1, 0))
@@ -49,8 +49,8 @@ class MockNode(SampleNode):
 
 class MockGraph(dict):
     def __init__(self):
-        for x in xrange(SIZE_X):
-            for y in xrange(SIZE_Y):
+        for x in range(SIZE_X):
+            for y in range(SIZE_Y):
                 self[SampleXYZ(x, y, 0)] = MockNode(self, x, y, True)
         # set some unpassable fields
         self[8, 0, 0].passable = False

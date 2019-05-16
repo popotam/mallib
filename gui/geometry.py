@@ -10,7 +10,7 @@ Copyright © 2011 Paweł Sobkowiak
 '''
 
 from math import sqrt
-from itertools import izip
+
 
 from pyglet.gl import GLfloat, GLdouble
 
@@ -80,7 +80,7 @@ CUBE_NORMALS = (
 
 
 def sum_vectors(*args):
-    return tuple(sum(column) for column in izip(*args))
+    return tuple(sum(column) for column in zip(*args))
 
 
 def add_v4(v1, v2):

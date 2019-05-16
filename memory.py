@@ -14,7 +14,7 @@ def check_memory():
     try:
         from guppy import hpy
         hp = hpy().heap()
-        print hp
-        print hp.byrcs
+        print(hp)
+        print(hp.byrcs)
     except ImportError:
-        print "Aborting memory analysis - could not import heapy"
+        print("Aborting memory analysis - could not import heapy")

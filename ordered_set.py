@@ -83,6 +83,7 @@ class OrderedSet(MutableSet):
     def copy(self):
         return self.__class__(self)
 
+
 if __name__ == '__main__':
     print(OrderedSet('abracadaba'))
     print(OrderedSet('simsalabim'))

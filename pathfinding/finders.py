@@ -14,7 +14,7 @@ import logging
 import heapq
 from time import time
 
-from constants import NOT_PASSABLE
+from .constants import NOT_PASSABLE
 
 logger = logging.getLogger('malpath')
 

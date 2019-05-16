@@ -22,8 +22,8 @@ class MarkJournal(collections.defaultdict):
             self.print_counter(label)
 
     def print_counter(self, label):
-        for counter, count in self[label].iteritems():
-            print label, counter, count
+        for counter, count in self[label].items():
+            print(label, counter, count)
 
 # a module global to hold @mark decorator findings
 MARK = MarkJournal()

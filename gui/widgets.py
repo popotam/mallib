@@ -28,7 +28,7 @@ class Switch(object):
     def on(self):
         self.value = True
 
-    def __nonzero__(self):
+    def __bool__(self):
         return self.value
 
     def __trunc__(self):
@@ -168,6 +168,7 @@ class UpdatedLabel(pyglet.text.Label):
                 self.update_count = 0
                 text = self.update_func(self.update_object)
                 if self.text != text:
+                    print(self.text,text)
                     self.text = text
 
 
