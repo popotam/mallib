@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''Tests.
+"""Tests.
 
 mallib: common library for mal projects
 @author: Paweł Sobkowiak
 @contact: pawel.sobkowiak@gmail.com
 Copyright © 2011 Paweł Sobkowiak
 
-'''
+"""
+from __future__ import absolute_import, division, print_function
 
 import unittest
 
@@ -60,9 +61,9 @@ class MockGraph(dict):
         for field in self.values():
             field.generate_connections()
         # set some tags
-        self[5, 5, 0].tags |= set(['single_target', 'target'])
-        self[5, 9, 0].tags |= set(['target'])
-        self[3, 2, 0].tags |= set(['target'])
+        self[5, 5, 0].tags |= {'single_target', 'target'}
+        self[5, 9, 0].tags |= {'target'}
+        self[3, 2, 0].tags |= {'target'}
 
 
 class TestPathfinding(unittest.TestCase):

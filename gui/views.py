@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''Views.
+"""Views.
 
 mallib: common library for mal projects
 @author: Pawel Sobkowiak
 @contact: pawel.sobkowiak@gmail.com
 Copyright © 2011 Paweł Sobkowiak. All rights reserved.
 
-'''
+"""
+from __future__ import absolute_import, division, print_function
 
 import pyglet.clock
 

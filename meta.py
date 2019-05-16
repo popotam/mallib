@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''Tools.
+"""Tools.
 
 mallib: meta decorators for refactoring etc.
 @author: Paweł Sobkowiak
 @contact: pawel.sobkowiak@gmail.com
 Copyright © 2011 Paweł Sobkowiak
 
-'''
+"""
+from __future__ import absolute_import, division, print_function
 
 import collections
 import inspect

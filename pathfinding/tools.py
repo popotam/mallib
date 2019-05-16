@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''Tools and exporters for pathfinding.
+"""Tools and exporters for pathfinding.
 
 mallib: common library for mal projects
 @author: Paweł Sobkowiak
 @contact: pawel.sobkowiak@gmail.com
 Copyright © 2011 Paweł Sobkowiak
 
-'''
+"""
+from __future__ import absolute_import, division, print_function
 
 import collections
 import json
@@ -22,7 +23,7 @@ def export_to_json(entry_node, fp=None, sample_size=10, only_passable=True):
     Uses Node.xyz tuple as node identifier.
     """
     queue = collections.deque([entry_node])
-    opened = set([entry_node])
+    opened = {entry_node}
     graph = []
     while queue:
         node = queue.pop()

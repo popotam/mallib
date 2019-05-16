@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''Fractal.
+"""Fractal.
 
 mallib: common library for mal projects
 @author: Paweł Sobkowiak
 @contact: pawel.sobkowiak@gmail.com
 Copyright © 2011 Paweł Sobkowiak
 
-'''
+"""
+from __future__ import absolute_import, division, print_function
 
 import random
 from collections import namedtuple, defaultdict
@@ -151,7 +152,7 @@ class HexFractalGenerator(BaseFractalGenerator):
         self._generate()
 
     def _point_iterator(self):
-        return self._data.keys()
+        return list(self._data.keys())
 
     def _generate(self):
         ratio = 2. ** (-self.chaos)
@@ -172,8 +173,8 @@ class HexFractalGenerator(BaseFractalGenerator):
                     second = P(point.x + direction.x * edge_size,
                                point.y + direction.y * edge_size)
                     if second in self._data:
-                        new_point = P(point.x + direction.x * edge_size / 2,
-                                      point.y + direction.y * edge_size / 2)
+                        new_point = P(point.x + direction.x * edge_size // 2,
+                                      point.y + direction.y * edge_size // 2)
                         # add to data
                         # point and second have double weight
                         # because of hex shape from triangles
@@ -182,9 +183,9 @@ class HexFractalGenerator(BaseFractalGenerator):
                         # check neighbours for average value
                         for neighbour in hex_neighbours:
                             neigh_point = P(point.x + neighbour.x
-                                            * edge_size / 2,
+                                            * edge_size // 2,
                                             point.y + neighbour.y
-                                            * edge_size / 2)
+                                            * edge_size // 2)
                             if neigh_point in self._data:
                                 value += self._data[neigh_point]
                                 vertices += 1
@@ -336,7 +337,7 @@ class SquareDiamondFractalGenerator(BaseFractalGenerator):
         # We want the four corners of the array to have the same
         # point. This will allow us to tile the arrays next to each other
         # such that they join seemlessly.
-        stride = sub_size / 2
+        stride = sub_size // 2
         # Now we add ever-increasing detail based on the "diamond" seeded
         # values. We loop over stride, which gets cut in half at the
         # bottom of the loop. Since it's an int, eventually division by 2

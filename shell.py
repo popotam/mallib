@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''iPython shell initialization code.
+"""iPython shell initialization code.
 
 mallib: common library for mal projects
 @author: Paweł Sobkowiak
 @contact: pawel.sobkowiak@gmail.com
 Copyright © 2011 Paweł Sobkowiak
 
-'''
+"""
+from __future__ import absolute_import, division, print_function
 
 from distutils.version import LooseVersion
 

@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''Sample minimal implementations of pathfinding primitives.
+"""Sample minimal implementations of pathfinding primitives.
 
 mallib: common library for mal projects
 @author: Paweł Sobkowiak
 @contact: pawel.sobkowiak@gmail.com
 Copyright © 2011 Paweł Sobkowiak
 
-'''
+"""
+from __future__ import absolute_import, division, print_function
 
 import collections
 

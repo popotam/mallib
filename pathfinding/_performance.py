@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''Performance framework for pathfinding.
+"""Performance framework for pathfinding.
 
 mallib: common library for mal projects
 @author: Paweł Sobkowiak
 @contact: pawel.sobkowiak@gmail.com
 Copyright © 2011 Paweł Sobkowiak
 
-'''
+"""
+from __future__ import absolute_import, division, print_function
 
 import json
 import logging
@@ -16,12 +17,13 @@ import os
 import sys
 import time
 
-from .finders import find_path, find_path_queue
+from .finders import find_path, find_path_bisect_insort, find_path_heapq
 from .sample import SampleXYZ, SampleConnection, SampleNode
 
 FIND_FUNCTIONS = {
     'find_path': find_path,
-    'find_path_queue': find_path_queue,
+    'find_path_bisect_insort': find_path_bisect_insort,
+    'find_path_heapq': find_path_heapq,
 }
 
 
@@ -38,7 +40,7 @@ def find_all_paths(sample, find_func):
     t0 = time.time()
     for src in sample:
         for dst in sample:
-            find_path_queue(src, dst)
+            find_func(src, dst)
     return time.time() - t0
 
 
@@ -58,7 +60,7 @@ def main(path, repetitions, find_func):
         print(index, ':', find_all_paths(sample, find_func))
 
 if __name__ == '__main__':
-    usage = "Usage: _performance.py [options] <graph.json>\n" + __doc__
+    usage = ("Usage: _performance.py [options] <graph.json>\n" + __doc__)
     parser = OptionParser(usage=usage)
     parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
                       help="log results for each path",

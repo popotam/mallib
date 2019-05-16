@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-'''Finder functions.
+"""Finder functions.
 
 mallib: common library for mal projects
 @author: Paweł Sobkowiak
 @contact: pawel.sobkowiak@gmail.com
 Copyright © 2011 Paweł Sobkowiak
 
-'''
+"""
+from __future__ import absolute_import, division, print_function
 
 import bisect
 import logging
@@ -29,7 +30,7 @@ class NoPathFound(Exception):
 #    return abs(x1 - x2) + abs(y1 - y2) + abs(z1 - z2)
 
 
-def find_path(src, dst, max_nodes_checked=1000000):
+def find_path_bisect_insort(src, dst, max_nodes_checked=1000000):
     """ Implementation of A* algorithm """
     global logger
     if src == dst:
@@ -44,13 +45,13 @@ def find_path(src, dst, max_nodes_checked=1000000):
     costs = {src: (0, heuristic, None)}
     ### queue = [(g + h, g, node), ...]
     queue = [(heuristic, 0, src)]
-    opened = set([src])
+    opened = {src}
     closed = set()
 
     while queue:
         node_f, node_g, node = queue.pop(0)
         # optimalization - it is better to check if node is already
-        # in closed list, than to remove touple from queue list
+        # in closed list, than to remove tuple from queue list
         if node in closed:
             continue
 
@@ -110,7 +111,7 @@ def find_path(src, dst, max_nodes_checked=1000000):
     return path
 
 
-def find_path_queue(src, dst, max_nodes_checked=1000000):
+def find_path_heapq(src, dst, max_nodes_checked=1000000):
     """ Implementation of A* algorithm """
     global logger
     if src == dst:
@@ -129,13 +130,13 @@ def find_path_queue(src, dst, max_nodes_checked=1000000):
     ### queue = [(g + h, g, node), ...]
     queue = []
     heappush(queue, (heuristic, 0, src))
-    opened = set([src])
+    opened = {src}
     closed = set()
 
     while queue:
         node_f, node_g, node = heappop(queue)
         # optimalization - it is better to check if node is already
-        # in closed list, than to remove touple from queue list
+        # in closed list, than to remove tuple from queue list
         if node in closed:
             continue
 
@@ -207,7 +208,7 @@ def find_nearest_targets(src, target_getter,
 
     costs = {src: (0, None)}
     queue = [(0, src)]
-    opened = set([src])
+    opened = {src}
     closed = set()
     while queue:
         node_cost, node = queue.pop(0)
@@ -265,3 +266,6 @@ def find_nearest_targets(src, target_getter,
     logger.debug("dijkstra %.3f from %s paths_found=%i closed_list=%i",
             calculation_time, src.xyz, len(paths), len(closed))
     return paths
+
+
+find_path = find_path_bisect_insort
