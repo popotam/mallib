@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """Pathfinding constants.
 
 mallib: common library for mal projects

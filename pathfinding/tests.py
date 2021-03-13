@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """Tests.
 
 mallib: common library for mal projects
@@ -50,6 +49,7 @@ class MockNode(SampleNode):
 
 class MockGraph(dict):
     def __init__(self):
+        super().__init__()
         for x in range(SIZE_X):
             for y in range(SIZE_Y):
                 self[SampleXYZ(x, y, 0)] = MockNode(self, x, y, True)

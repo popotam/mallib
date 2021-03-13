@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """Sample minimal implementations of pathfinding primitives.
 
 mallib: common library for mal projects

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """iPython shell initialization code.
 
 mallib: common library for mal projects
