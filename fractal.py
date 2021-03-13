@@ -121,8 +121,7 @@ class BaseFractalGenerator(object):
 
 class HexFractalGenerator(BaseFractalGenerator):
     def __init__(self, size, chaos, seed=None, wraped=True, island=False):
-        super(HexFractalGenerator, self).__init__(size, chaos,
-                                                  seed, wraped, island)
+        super().__init__(size, chaos, seed, wraped, island)
 
         width = 2 ** size + 1
         last = width - 1
@@ -196,9 +195,7 @@ class HexFractalGenerator(BaseFractalGenerator):
 
 class SquareDiamondFractalGenerator(BaseFractalGenerator):
     def __init__(self, size, chaos, seed=None, wraped=True, island=False):
-        super(SquareDiamondFractalGenerator, self).__init__(size, chaos,
-                                                            seed, wraped,
-                                                            island)
+        super().__init__(size, chaos, seed, wraped, island)
 
         # setting initial numbers in island mode
         if island:

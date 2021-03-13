@@ -32,7 +32,7 @@ class MalWindow(pyglet.window.Window):
                  launch_fullscreen=False,
                  icon_path=None,
                  **kwargs):
-        super(MalWindow, self).__init__(width, height, **kwargs)
+        super().__init__(width, height, **kwargs)
         self.set_exclusive_mouse(exclusive_mouse)
         if launch_fullscreen:
             self.set_fullscreen()
@@ -45,7 +45,7 @@ class MalWindow(pyglet.window.Window):
         self.current_view = None
         self.views = []
         self.views_switch = malwidgets.PointingSwitchCycle(self, 'views')
-        #self.switch_view(self.views_switch())
+        # self.switch_view(self.views_switch())
         self.resources = {}
 
     def switch_view(self, new_view):

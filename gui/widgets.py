@@ -45,7 +45,7 @@ class CheckboxProxy(Switch):
         self.callback = callback
         if callback:
             self.checkbox.action = lambda caller: self.callback(caller.value)
-        super(CheckboxProxy, self).__init__(state=state)
+        super().__init__(state=state)
 
     @property
     def value(self):
@@ -94,7 +94,7 @@ class ButtonProxy(Switch):
         self.button.action = lambda caller: self.toggle()
         self.true_text = true_text
         self.false_text = false_text
-        super(ButtonProxy, self).__init__(state=state)
+        super().__init__(state=state)
 
     def toggle(self):
         self.value = not self.value
@@ -127,7 +127,7 @@ class PointingSwitchCycle(SwitchCycle):
     def __init__(self, parent, list_name, state=0, cycling=True):
         self.parent = parent
         self.list_name = list_name
-        super(PointingSwitchCycle, self).__init__(self.lenght, state, cycling)
+        super().__init__(self.lenght, state, cycling)
 
     def __call__(self):
         return getattr(self.parent, self.list_name)[self.value]
@@ -159,7 +159,7 @@ class UpdatedLabel(pyglet.text.Label):
             del kwargs['update_rate']
         else:
             self.update_rate = 10
-        super(UpdatedLabel, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.update_count = self.update_rate - 1
 
     def update(self):

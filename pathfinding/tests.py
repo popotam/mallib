@@ -24,7 +24,7 @@ SIZE_X, SIZE_Y = 10, 10
 class MockNode(SampleNode):
     def __init__(self, graph, x, y, passable, tags=None):
         xyz = SampleXYZ(x, y, 0)
-        super(MockNode, self).__init__(xyz, tags)
+        super().__init__(xyz, tags)
         self.passable = passable
         self.graph = graph
 

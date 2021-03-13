@@ -16,7 +16,7 @@ import inspect
 
 class MarkJournal(collections.defaultdict):
     def __init__(self):
-        super(MarkJournal, self).__init__(lambda: collections.defaultdict(int))
+        super().__init__(lambda: collections.defaultdict(int))
 
     def print_all_counters(self):
         for label in self:
@@ -25,6 +25,7 @@ class MarkJournal(collections.defaultdict):
     def print_counter(self, label):
         for counter, count in self[label].items():
             print(label, counter, count)
+
 
 # a module global to hold @mark decorator findings
 MARK = MarkJournal()
