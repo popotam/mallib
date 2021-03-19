@@ -7,10 +7,9 @@ mallib: meta decorators for refactoring etc.
 Copyright © 2011 Paweł Sobkowiak
 
 """
-from __future__ import absolute_import, division, print_function
 
 import collections
-import inspect
+import functools
 
 
 class MarkJournal(collections.defaultdict):
@@ -30,32 +29,21 @@ class MarkJournal(collections.defaultdict):
 MARK = MarkJournal()
 
 
-def mark(label=None, journal=MARK, enable=True):
+def mark(label, *, journal=None, enable=True):
+    if journal is None:
+        journal = MARK
+
     def decorator(func):
         if not enable:
             return func
-        func_counter = "%s:%s" % (func.__module__, func.__name__)
 
-        def func_wrapper(*args, **kwargs):
+        func_counter = f'{func.__module__}:{func.__qualname__}'
+
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
             journal[label][func_counter] += 1
             return func(*args, **kwargs)
 
-        def method_wrapper(self, *args, **kwargs):
-            counter = "%s.%s:%s" % (
-                        self.__class__.__module__,
-                        self.__class__.__name__,
-                        func.__name__)
-            journal[label][counter] += 1
-            return func(self, *args, **kwargs)
-
-        args = inspect.getargspec(func).args
-        if args and args[0] == 'self':
-            method_wrapper.__name__ = func.__name__
-            method_wrapper.__doc__ = func.__doc__
-            return method_wrapper
-        else:
-            func_wrapper.__name__ = func.__name__
-            func_wrapper.__doc__ = func.__doc__
-            return func_wrapper
+        return wrapper
 
     return decorator

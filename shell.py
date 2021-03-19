@@ -7,7 +7,6 @@ mallib: common library for mal projects
 Copyright © 2011 Paweł Sobkowiak
 
 """
-from __future__ import absolute_import, division, print_function
 
 from distutils.version import LooseVersion
 
