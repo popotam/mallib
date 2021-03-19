@@ -130,14 +130,14 @@ def inverse_if_downward(v):
         return v
 
 
-def vector_lenght(v):
+def vector_length(v):
     x, y, z = v
     return sqrt(x * x + y * y + z * z)
 
 
 def normalize(v):
-    lenght = vector_lenght(v)
-    return v[0] / lenght, v[1] / lenght, v[2] / lenght
+    length = vector_length(v)
+    return v[0] / length, v[1] / length, v[2] / length
 
 
 def normalized_normal(v1, v2, v3):  # three points as arguments

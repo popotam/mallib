@@ -100,21 +100,21 @@ class ButtonProxy(Switch):
 
 
 class SwitchCycle(object):
-    def __init__(self, lenght, state=0, cycling=True):
+    def __init__(self, length, state=0, cycling=True):
         self.value = state
-        self.lenght = lenght
+        self.length = length
         self.cycling = Switch(cycling)
 
     def inc(self):
         self.value += 1
-        if self.value >= self.lenght:
-            self.value = 0 if self.cycling else self.lenght - 1
+        if self.value >= self.length:
+            self.value = 0 if self.cycling else self.length - 1
         return self
 
     def dec(self):
         self.value -= 1
         if self.value < 0:
-            self.value = self.lenght - 1 if self.cycling else 0
+            self.value = self.length - 1 if self.cycling else 0
         return self
 
     def __call__(self):
@@ -125,17 +125,17 @@ class PointingSwitchCycle(SwitchCycle):
     def __init__(self, parent, list_name, state=0, cycling=True):
         self.parent = parent
         self.list_name = list_name
-        super().__init__(self.lenght, state, cycling)
+        super().__init__(self.length, state, cycling)
 
     def __call__(self):
         return getattr(self.parent, self.list_name)[self.value]
 
     @property
-    def lenght(self):
+    def length(self):
         return len(getattr(self.parent, self.list_name))
 
-    @lenght.setter
-    def lenght(self, value):
+    @length.setter
+    def length(self, value):
         """ Override SwitchCycle setting of length attribute """
         pass
 

@@ -103,7 +103,7 @@ def find_path_bisect_insort(src, dst, max_nodes_checked=1000000):
     # calculating stats
     total_cost = costs[dst][0] if success else -1
     calculation_time = time() - start_time
-    logger.debug("astar %.3f %s->%s lenght=%i closed=%i total_cost=%i heur=%i",
+    logger.debug("astar %.3f %s->%s length=%i closed=%i total_cost=%i heur=%i",
                  calculation_time, src.xyz, dst.xyz, len(path),
                  len(closed), total_cost, costs[src][1])
     return path
@@ -188,7 +188,7 @@ def find_path_heapq(src, dst, max_nodes_checked=1000000):
     # calculating stats
     total_cost = costs[dst][0] if success else -1
     calculation_time = time() - start_time
-    logger.debug("astar %.3f %s->%s lenght=%i closed=%i total_cost=%i heur=%i",
+    logger.debug("astar %.3f %s->%s length=%i closed=%i total_cost=%i heur=%i",
             calculation_time, src.xyz, dst.xyz, len(path),
             len(closed), total_cost, costs[src][1])
     return path
