@@ -8,7 +8,7 @@ Copyright © 2011 Paweł Sobkowiak
 
 """
 
-from collections import MutableSet
+from collections.abc import MutableSet
 
 KEY, PREV, NEXT = range(3)
 
