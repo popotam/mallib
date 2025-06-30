@@ -57,18 +57,34 @@ def main(path, repetitions, find_func):
     for index in range(repetitions):
         print(index, ':', find_all_paths(sample, find_func))
 
+
 if __name__ == '__main__':
-    usage = ("Usage: _performance.py [options] <graph.json>\n" + __doc__)
+    usage = "Usage: _performance.py [options] <graph.json>\n" + __doc__
     parser = OptionParser(usage=usage)
-    parser.add_option("-v", "--verbose", action="store_true", dest="verbose",
-                      help="log results for each path",
-                      default=False)
-    parser.add_option("-r", "--repetitions", type="int", dest="repetitions",
-                      help="how many times repeat the measurement", default=10)
-    parser.add_option("-f", "--find-function", type="str", dest="find_func",
-                      help="choose find function implementation {}".format(
-                            list(FIND_FUNCTIONS.keys())),
-                      default="find_path")
+    parser.add_option(
+        "-v",
+        "--verbose",
+        action="store_true",
+        dest="verbose",
+        help="log results for each path",
+        default=False,
+    )
+    parser.add_option(
+        "-r",
+        "--repetitions",
+        type="int",
+        dest="repetitions",
+        help="how many times repeat the measurement",
+        default=10,
+    )
+    parser.add_option(
+        "-f",
+        "--find-function",
+        type="str",
+        dest="find_func",
+        help="choose find function implementation {}".format(list(FIND_FUNCTIONS.keys())),
+        default="find_path",
+    )
     (options, args) = parser.parse_args()
     if options.find_func not in FIND_FUNCTIONS:
         print("Incorrect find function.")

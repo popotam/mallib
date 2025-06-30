@@ -12,6 +12,7 @@ Copyright © 2011 Paweł Sobkowiak
 def check_memory():
     try:
         from guppy import hpy
+
         hp = hpy().heap()
         print(hp)
         print(hp.byrcs)

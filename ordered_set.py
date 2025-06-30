@@ -17,8 +17,8 @@ class OrderedSet(MutableSet):
 
     def __init__(self, iterable=None):
         self.end = end = []
-        end += [None, end, end]         # sentinel node for doubly linked list
-        self.map = {}                   # key --> [key, prev, next]
+        end += [None, end, end]  # sentinel node for doubly linked list
+        self.map = {}  # key --> [key, prev, next]
         if iterable is not None:
             self |= iterable
 
@@ -72,7 +72,7 @@ class OrderedSet(MutableSet):
         return not self.isdisjoint(other)
 
     def __del__(self):
-        self.clear()                    # remove circular references
+        self.clear()  # remove circular references
 
     # added by malsimulation
     def update(self, other):

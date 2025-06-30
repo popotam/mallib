@@ -22,14 +22,14 @@ class NoPathFound(Exception):
     pass
 
 
-#def dist_heuristic(node1, node2):
+# def dist_heuristic(node1, node2):
 #    x1, y1, z1 = node1.xyz
 #    x2, y2, z2 = node2.xyz
 #    return abs(x1 - x2) + abs(y1 - y2) + abs(z1 - z2)
 
 
 def find_path_bisect_insort(src, dst, max_nodes_checked=1000000):
-    """ Implementation of A* algorithm """
+    """Implementation of A* algorithm"""
     global logger
     if src == dst:
         return []
@@ -38,7 +38,7 @@ def find_path_bisect_insort(src, dst, max_nodes_checked=1000000):
 
     dx, dy, dz = dst.xyz
     x, y, z = src.xyz
-    heuristic = (abs(x - dx) + abs(y - dy) + abs(z - dz))
+    heuristic = abs(x - dx) + abs(y - dy) + abs(z - dz)
     ### costs = { node: (g, h, parent), ... }
     costs = {src: (0, heuristic, None)}
     ### queue = [(g + h, g, node), ...]
@@ -81,16 +81,14 @@ def find_path_bisect_insort(src, dst, max_nodes_checked=1000000):
             else:
                 # add node to opened list
                 x, y, z = neighbour.xyz
-                heuristic = (abs(x - dx) + abs(y - dy) + abs(z - dz))
+                heuristic = abs(x - dx) + abs(y - dy) + abs(z - dz)
                 costs[neighbour] = (cost, heuristic, node)
                 bisect.insort(queue, (cost + heuristic, cost, neighbour))
                 opened.add(neighbour)
 
     if success is None:
-        logger.error("No path found - opened list empty - find_path(%s, %s)",
-                     src, dst)
-        raise NoPathFound("opened list empty - find_path(%s, %s)"
-                          % (src, dst))
+        logger.error("No path found - opened list empty - find_path(%s, %s)", src, dst)
+        raise NoPathFound("opened list empty - find_path(%s, %s)" % (src, dst))
 
     # backtracing path
     path = []
@@ -103,14 +101,21 @@ def find_path_bisect_insort(src, dst, max_nodes_checked=1000000):
     # calculating stats
     total_cost = costs[dst][0] if success else -1
     calculation_time = time() - start_time
-    logger.debug("astar %.3f %s->%s length=%i closed=%i total_cost=%i heur=%i",
-                 calculation_time, src.xyz, dst.xyz, len(path),
-                 len(closed), total_cost, costs[src][1])
+    logger.debug(
+        "astar %.3f %s->%s length=%i closed=%i total_cost=%i heur=%i",
+        calculation_time,
+        src.xyz,
+        dst.xyz,
+        len(path),
+        len(closed),
+        total_cost,
+        costs[src][1],
+    )
     return path
 
 
 def find_path_heapq(src, dst, max_nodes_checked=1000000):
-    """ Implementation of A* algorithm """
+    """Implementation of A* algorithm"""
     global logger
     if src == dst:
         return []
@@ -122,7 +127,7 @@ def find_path_heapq(src, dst, max_nodes_checked=1000000):
 
     dx, dy, dz = dst.xyz
     x, y, z = src.xyz
-    heuristic = (abs(x - dx) + abs(y - dy) + abs(z - dz))
+    heuristic = abs(x - dx) + abs(y - dy) + abs(z - dz)
     ### costs = { node: (g, h, parent), ... }
     costs = {src: (0, heuristic, None)}
     ### queue = [(g + h, g, node), ...]
@@ -166,16 +171,14 @@ def find_path_heapq(src, dst, max_nodes_checked=1000000):
             else:
                 # add node to opened list
                 x, y, z = neighbour.xyz
-                heuristic = (abs(x - dx) + abs(y - dy) + abs(z - dz))
+                heuristic = abs(x - dx) + abs(y - dy) + abs(z - dz)
                 costs[neighbour] = (cost, heuristic, node)
                 heappush(queue, (cost + heuristic, cost, neighbour))
                 opened.add(neighbour)
 
     if success is None:
-        logger.error("No path found - opened list empty - find_path(%s, %s)",
-                     src, dst)
-        raise NoPathFound("opened list empty - find_path(%s, %s)"
-                          % (src, dst))
+        logger.error("No path found - opened list empty - find_path(%s, %s)", src, dst)
+        raise NoPathFound("opened list empty - find_path(%s, %s)" % (src, dst))
 
     # backtracing path
     path = []
@@ -188,14 +191,20 @@ def find_path_heapq(src, dst, max_nodes_checked=1000000):
     # calculating stats
     total_cost = costs[dst][0] if success else -1
     calculation_time = time() - start_time
-    logger.debug("astar %.3f %s->%s length=%i closed=%i total_cost=%i heur=%i",
-            calculation_time, src.xyz, dst.xyz, len(path),
-            len(closed), total_cost, costs[src][1])
+    logger.debug(
+        "astar %.3f %s->%s length=%i closed=%i total_cost=%i heur=%i",
+        calculation_time,
+        src.xyz,
+        dst.xyz,
+        len(path),
+        len(closed),
+        total_cost,
+        costs[src][1],
+    )
     return path
 
 
-def find_nearest_targets(src, target_getter,
-                         count=1, max_distance=100000):
+def find_nearest_targets(src, target_getter, count=1, max_distance=100000):
     """
     Uses Dijkstra algorithm to find nodes that have any target
     returned by given target getter
@@ -256,13 +265,24 @@ def find_nearest_targets(src, target_getter,
             path.append(node)
             node = parent
             parent = costs[node][1]
-        paths.append({'path': path, 'destination': destination,
-                      'cost': costs[destination][0], 'targets': targets})
+        paths.append(
+            {
+                'path': path,
+                'destination': destination,
+                'cost': costs[destination][0],
+                'targets': targets,
+            }
+        )
 
     # calculating stats
     calculation_time = time() - start_time
-    logger.debug("dijkstra %.3f from %s paths_found=%i closed_list=%i",
-            calculation_time, src.xyz, len(paths), len(closed))
+    logger.debug(
+        "dijkstra %.3f from %s paths_found=%i closed_list=%i",
+        calculation_time,
+        src.xyz,
+        len(paths),
+        len(closed),
+    )
     return paths
 
 

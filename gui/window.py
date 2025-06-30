@@ -25,11 +25,7 @@ def get_best_config(**kwargs):
 
 
 class MalWindow(pyglet.window.Window):
-    def __init__(self, width, height,
-                 exclusive_mouse=False,
-                 launch_fullscreen=False,
-                 icon_path=None,
-                 **kwargs):
+    def __init__(self, width, height, exclusive_mouse=False, launch_fullscreen=False, icon_path=None, **kwargs):
         super().__init__(width, height, **kwargs)
         self.set_exclusive_mouse(exclusive_mouse)
         if launch_fullscreen:
@@ -63,6 +59,7 @@ class MalWindow(pyglet.window.Window):
             self.switch_view(self.views_switch())
         elif symbol == key.GRAVE:
             from mallib.shell import interactive_shell
+
             interactive_shell(self._shell_context())
 
     def _shell_context(self):

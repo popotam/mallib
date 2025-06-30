@@ -30,53 +30,122 @@ RIGHTWARD = (1, 0, 0)
 
 CUBE = (
     # FRONT
-    0, 0, 0,
-    1, 0, 0,
-    1, 1, 0,
-    1, 1, 0,
-    0, 1, 0,
-    0, 0, 0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
     # BACK
-    0, 0, 1,
-    0, 1, 1,
-    1, 1, 1,
-    1, 1, 1,
-    1, 0, 1,
-    0, 0, 1,
+    0,
+    0,
+    1,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    1,
+    0,
+    0,
+    1,
     # TOP
-    0, 1, 0,
-    1, 1, 0,
-    1, 1, 1,
-    1, 1, 1,
-    0, 1, 1,
-    0, 1, 0,
+    0,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    0,
     # BOTTOM
-    0, 0, 0,
-    0, 0, 1,
-    1, 0, 1,
-    1, 0, 1,
-    1, 0, 0,
-    0, 0, 0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
     # LEFT
-    0, 0, 0,
-    0, 1, 0,
-    0, 1, 1,
-    0, 1, 1,
-    0, 0, 1,
-    0, 0, 0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
     # RIGHT
-    1, 0, 0,
-    1, 0, 1,
-    1, 1, 1,
-    1, 1, 1,
-    1, 1, 0,
-    1, 0, 0,
+    1,
+    0,
+    0,
+    1,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    1,
+    0,
+    0,
 )
 
-CUBE_NORMALS = (
-    FORWARD * 6 + BACKWARD * 6 + UPWARD * 6 +
-    DOWNWARD * 6 + LEFTWARD * 6 + RIGHTWARD * 6
-)
+CUBE_NORMALS = FORWARD * 6 + BACKWARD * 6 + UPWARD * 6 + DOWNWARD * 6 + LEFTWARD * 6 + RIGHTWARD * 6
 
 
 def sum_vectors(*args):
@@ -96,12 +165,14 @@ def cross_product(bx, by, bz, cx, cy, cz):
 
 
 def normal(p1, p2, p3):  # three points as arguments
-    return cross_product(p1[0] - p2[0],
-                         p1[1] - p2[1],
-                         p1[2] - p2[2],
-                         p2[0] - p3[0],
-                         p2[1] - p3[1],
-                         p2[2] - p3[2])
+    return cross_product(
+        p1[0] - p2[0],
+        p1[1] - p2[1],
+        p1[2] - p2[2],
+        p2[0] - p3[0],
+        p2[1] - p3[1],
+        p2[2] - p3[2],
+    )
 
 
 def normal_from_two_points(p1, p2):
@@ -114,12 +185,14 @@ def normal_from_two_points(p1, p2):
     # x3 = y2 - y1
     # y3 = x1 - x2
     # z3 = z1 (flat projection)
-    return cross_product(x1 - x2,
-                         y1 - y2,
-                         z1 - z2,
-                         x2 + y1 - y2,  # x2 - x3
-                         y2 - x1 + x2,  # y2 - y3
-                         z2 - z1)
+    return cross_product(
+        x1 - x2,
+        y1 - y2,
+        z1 - z2,
+        x2 + y1 - y2,  # x2 - x3
+        y2 - x1 + x2,  # y2 - y3
+        z2 - z1,
+    )
 
 
 @mark('refactor')
@@ -164,25 +237,28 @@ def cast_triangle(points, limit, cast_down=True):
         bad_vertex = condition.index(0)
         order = ORDER_FOR_TRIANGLE_CASTING[bad_vertex]
         for i in order:
-            mul = ((points[bad_vertex][2] - limit)
-                   / (points[bad_vertex][2] - points[i][2])
-                   - 0.001)
+            mul = (points[bad_vertex][2] - limit) / (points[bad_vertex][2] - points[i][2]) - 0.001
             new_x = points[bad_vertex][0] * (1.0 - mul) + points[i][0] * (mul)
             new_y = points[bad_vertex][1] * (1.0 - mul) + points[i][1] * (mul)
             new_points.append((new_x, new_y))
-        return [(p[0], p[1], limit)
-                for p in [points[order[0]], points[order[1]],
-                          new_points[0], points[order[1]],
-                          new_points[1], new_points[0]]]
+        return [
+            (p[0], p[1], limit)
+            for p in [
+                points[order[0]],
+                points[order[1]],
+                new_points[0],
+                points[order[1]],
+                new_points[1],
+                new_points[0],
+            ]
+        ]
     elif s == 1:
         new_points = []
         good_vertex = condition.index(True)
         new_points.append(points[good_vertex])
         order = ORDER_FOR_TRIANGLE_CASTING[good_vertex]
         for i in order:
-            mul = ((points[good_vertex][2] - limit)
-                   / (points[good_vertex][2] - points[i][2])
-                   + 0.001)
+            mul = (points[good_vertex][2] - limit) / (points[good_vertex][2] - points[i][2]) + 0.001
             new_x = points[good_vertex][0] * (1.0 - mul) + points[i][0] * (mul)
             new_y = points[good_vertex][1] * (1.0 - mul) + points[i][1] * (mul)
             new_points.append((new_x, new_y))

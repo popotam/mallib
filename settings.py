@@ -33,10 +33,16 @@ class Settings(object):
         self.logger.info("Loading %s settings...", self.settings_name)
         try:
             for each_file in sorted(glob.glob(self.settings_filenames)):
-                exec(compile(open(each_file).read(), each_file, 'exec'), self.globals, self.__dict__)
+                exec(
+                    compile(open(each_file).read(), each_file, 'exec'),
+                    self.globals,
+                    self.__dict__,
+                )
         except Exception as e:
-            message = ("%s settings file '%s' is corrupted"
-                       % (self.settings_name, each_file))
+            message = "%s settings file '%s' is corrupted" % (
+                self.settings_name,
+                each_file,
+            )
             logging.getLogger(self.logger_name).exception(message)
             raise ConfigError(message, e)
 
@@ -45,13 +51,11 @@ class Settings(object):
             self.RANDOM_SEED = random.randint(0, 999999999)
         seed = self.RANDOM_SEED
         self.random.seed(seed)
-        self.logger.info('Using %i as random seed for %s',
-                         seed, self.settings_name)
+        self.logger.info('Using %i as random seed for %s', seed, self.settings_name)
 
     def reload(self, reseed=True):
         # preserve logger and current random generator
-        self.__dict__ = {'logger': self.logger,
-                         'random': self.random}
+        self.__dict__ = {'logger': self.logger, 'random': self.random}
         self._load()
         if reseed:
             self._seed()

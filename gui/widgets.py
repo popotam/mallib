@@ -59,7 +59,7 @@ class CheckboxProxy(Switch):
 
 class SliderProxy(object):
     def __init__(self, slider, callback=None):
-        """ Offset is a fix for simplui Slider bug when min < 0 """
+        """Offset is a fix for simplui Slider bug when min < 0"""
         self.slider = slider
         self.callback = callback
         if callback:
@@ -136,7 +136,7 @@ class PointingSwitchCycle(SwitchCycle):
 
     @length.setter
     def length(self, value):
-        """ Override SwitchCycle setting of length attribute """
+        """Override SwitchCycle setting of length attribute"""
         pass
 
 
@@ -172,12 +172,20 @@ class UpdatedLabel(pyglet.text.Label):
 
 
 class Camera2D(object):
-    def __init__(self, parent, x=0, y=0, target=None, locked=False,
-                 min_zoom=0.25, max_zoom=2.0):
+    def __init__(
+        self,
+        parent,
+        x=0,
+        y=0,
+        target=None,
+        locked=False,
+        min_zoom=0.25,
+        max_zoom=2.0,
+    ):
         self.parent = parent
         self._zoom_quantifier = 10.0  # 100%
-        self.min_zoom = 10.0 / (min_zoom ** 0.5)
-        self.max_zoom = 10.0 / (max_zoom ** 0.5)
+        self.min_zoom = 10.0 / (min_zoom**0.5)
+        self.max_zoom = 10.0 / (max_zoom**0.5)
         self.x = x
         self.y = y
         self.target = target
@@ -200,14 +208,12 @@ class Camera2D(object):
 
     @property
     def zoom(self):
-        return 100.0 / (self._zoom_quantifier ** 2)
+        return 100.0 / (self._zoom_quantifier**2)
 
     def transform_scene(self):
         zoom = self.zoom
         # move to the center of the window
-        glTranslatef(self.parent.window.width / 2.0,
-                     self.parent.window.height / 2.0,
-                     0.0)
+        glTranslatef(self.parent.window.width / 2.0, self.parent.window.height / 2.0, 0.0)
         glScalef(zoom, zoom, 1.0)
         glTranslatef(-self.x, -self.y, 0.0)
 

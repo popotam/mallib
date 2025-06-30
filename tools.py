@@ -19,6 +19,7 @@ if hasattr(collections, 'OrderedDict'):
     OrderedDict = collections.OrderedDict
 else:
     from . import ordered_dict
+
     OrderedDict = ordered_dict.OrderedDict
 
 OrderedSet = ordered_set.OrderedSet
@@ -95,5 +96,4 @@ def choose_lowest(elements, altitudes, rand=None):
     if rand is None:
         rand = random
     min_alt = min(altitudes.values())
-    return rand.choice([element for element in elements
-                        if altitudes[element] == min_alt])
+    return rand.choice([element for element in elements if altitudes[element] == min_alt])

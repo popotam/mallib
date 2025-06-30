@@ -36,7 +36,7 @@ class BaseFractalGenerator(object):
         class LazyGrainDict(dict):
             _randgen = self._randgen
             make_grain = lambda self: self._randgen.randint(-100, 100)
-            #make_grain = lambda self : int(self._randgen.gauss(0,1)*100)
+            # make_grain = lambda self : int(self._randgen.gauss(0,1)*100)
             middle_grain = make_grain
             border_grain = lambda self: self._randgen.randint(-100, -50)
 
@@ -63,13 +63,14 @@ class BaseFractalGenerator(object):
             for field in self._point_iterator():
                 self.stdev += (self._data[field] - self.mean) ** 2
             self.stdev /= len(self._data)
-            self.stdev = self.stdev ** 0.5
+            self.stdev = self.stdev**0.5
 
-        return {'mean': self.mean,
-                'stdev': self.stdev,
-                'chaos': self.chaos,
-                'seed': self.seed,
-                }
+        return {
+            'mean': self.mean,
+            'stdev': self.stdev,
+            'chaos': self.chaos,
+            'seed': self.seed,
+        }
 
     def reset_statistics(self):
         self.mean = None
@@ -84,8 +85,7 @@ class BaseFractalGenerator(object):
         if self.stdev:  # avoid DivideByZero
             ratio = float(new_stdev) / self.stdev
             for field in self._point_iterator():
-                self._data[field] = (((self._data[field] - self.mean) * ratio)
-                                     + new_mean)
+                self._data[field] = ((self._data[field] - self.mean) * ratio) + new_mean
         self.reset_statistics()
 
     def linear_transform(self, multipier, shift):
@@ -98,9 +98,13 @@ class BaseFractalGenerator(object):
             self.mean = self.mean * multipier + shift
             self.stdev *= multipier * multipier
 
-    def power_transform(self, power, point_one=1,
-                        calculate_positives=True,
-                        calculate_negatives=False):
+    def power_transform(
+        self,
+        power,
+        point_one=1,
+        calculate_positives=True,
+        calculate_negatives=False,
+    ):
         """
         Apply power function transformation to fractal data
         point_one specifies which value should be treated as argument=1
@@ -109,11 +113,9 @@ class BaseFractalGenerator(object):
         point_one = float(point_one)
         for field in self._point_iterator():
             if calculate_positives and self._data[field] > 0:
-                self._data[field] = (((self._data[field] / point_one)
-                                      ** power) * point_one)
+                self._data[field] = ((self._data[field] / point_one) ** power) * point_one
             elif calculate_negatives and self._data[field] < 0:
-                self._data[field] = (-((-self._data[field] / point_one)
-                                       ** power) * point_one)
+                self._data[field] = -((-self._data[field] / point_one) ** power) * point_one
         self.reset_statistics()
 
 
@@ -121,7 +123,7 @@ class HexFractalGenerator(BaseFractalGenerator):
     def __init__(self, size, chaos, seed=None, wraped=True, island=False):
         super().__init__(size, chaos, seed, wraped, island)
 
-        width = 2 ** size + 1
+        width = 2**size + 1
         last = width - 1
         edge = int((width + 1) / 2)
 
@@ -135,13 +137,15 @@ class HexFractalGenerator(BaseFractalGenerator):
                 self._grain[P(edge - 1 + i, i)] = self._grain.border_grain()
                 self._grain[P(i, edge - 1 + i)] = self._grain.border_grain()
 
-        corners_and_middle = (P(0, 0),
-                              P(edge - 1, 0),
-                              P(0, edge - 1),
-                              P(last, last),
-                              P(edge - 1, last),
-                              P(last, edge - 1),
-                              P(edge - 1, edge - 1))
+        corners_and_middle = (
+            P(0, 0),
+            P(edge - 1, 0),
+            P(0, edge - 1),
+            P(last, last),
+            P(edge - 1, last),
+            P(last, edge - 1),
+            P(edge - 1, edge - 1),
+        )
         for point in corners_and_middle:
             self._data[point] = self._grain[point]
 
@@ -152,26 +156,32 @@ class HexFractalGenerator(BaseFractalGenerator):
         return list(self._data.keys())
 
     def _generate(self):
-        ratio = 2. ** (-self.chaos)
+        ratio = 2.0 ** (-self.chaos)
         positive_directions = (P(1, 0), P(0, 1), P(1, 1))
         # directions to neighbouring hexes
-        hex_neighbours = {P(1, 0): (P(0, -1), P(1, 1)),
-                          P(0, 1): (P(1, 1), P(-1, 0)),
-                          P(1, 1): (P(1, 0), P(0, 1))}
+        hex_neighbours = {
+            P(1, 0): (P(0, -1), P(1, 1)),
+            P(0, 1): (P(1, 1), P(-1, 0)),
+            P(1, 1): (P(1, 0), P(0, 1)),
+        }
         # we do calculation as if size was 2 times lower
         # to enable hex shaped board
         size = self.size - 1
-        width = 2 ** size + 1
+        width = 2**size + 1
         for step in range(size):
-            factor = ratio ** step
-            edge_size = (width - 1) // (2 ** step)
+            factor = ratio**step
+            edge_size = (width - 1) // (2**step)
             for point in self._point_iterator():
                 for direction in positive_directions:
-                    second = P(point.x + direction.x * edge_size,
-                               point.y + direction.y * edge_size)
+                    second = P(
+                        point.x + direction.x * edge_size,
+                        point.y + direction.y * edge_size,
+                    )
                     if second in self._data:
-                        new_point = P(point.x + direction.x * edge_size // 2,
-                                      point.y + direction.y * edge_size // 2)
+                        new_point = P(
+                            point.x + direction.x * edge_size // 2,
+                            point.y + direction.y * edge_size // 2,
+                        )
                         # add to data
                         # point and second have double weight
                         # because of hex shape from triangles
@@ -179,16 +189,14 @@ class HexFractalGenerator(BaseFractalGenerator):
                         value = (self._data[point] + self._data[second]) * 2
                         # check neighbours for average value
                         for neighbour in hex_neighbours:
-                            neigh_point = P(point.x + neighbour.x
-                                            * edge_size // 2,
-                                            point.y + neighbour.y
-                                            * edge_size // 2)
+                            neigh_point = P(
+                                point.x + neighbour.x * edge_size // 2,
+                                point.y + neighbour.y * edge_size // 2,
+                            )
                             if neigh_point in self._data:
                                 value += self._data[neigh_point]
                                 vertices += 1
-                        self._data[new_point] = ((value / vertices)
-                                                 + (self._grain[new_point]
-                                                    * factor))
+                        self._data[new_point] = (value / vertices) + (self._grain[new_point] * factor)
 
 
 class SquareDiamondFractalGenerator(BaseFractalGenerator):
@@ -197,7 +205,7 @@ class SquareDiamondFractalGenerator(BaseFractalGenerator):
 
         # setting initial numbers in island mode
         if island:
-            width = 2 ** size + 1
+            width = 2**size + 1
             middle = 2 ** (size - 1)
             self._grain[P(middle, middle)] = self._grain.middle_grain()
             for i in range(width):
@@ -213,7 +221,7 @@ class SquareDiamondFractalGenerator(BaseFractalGenerator):
         """
         Iterator over every field in fractal
         """
-        width = 2 ** self.size + 1
+        width = 2**self.size + 1
         for x in range(width):
             for y in range(width):
                 yield P(x, y)
@@ -243,74 +251,86 @@ class SquareDiamondFractalGenerator(BaseFractalGenerator):
         cases. The final 'else' clause handles the general case (in
         which i,j is not on an edge).
         """
-        width = 2 ** self.size + 1
+        width = 2**self.size + 1
         if i == 0:
-            return (self._data[P(i, j - stride)]
-                    + self._data[P(i, j + stride)]
-                    + self._data[P(sub_size - stride, j)]
-                    + self._data[P(i + stride, j)]) // 4
+            return (
+                self._data[P(i, j - stride)]
+                + self._data[P(i, j + stride)]
+                + self._data[P(sub_size - stride, j)]
+                + self._data[P(i + stride, j)]
+            ) // 4
         elif i == width - 1:
-            return (self._data[P(i, j - stride)]
-                    + self._data[P(i, j + stride)]
-                    + self._data[P(i - stride, j)]
-                    + self._data[P(0 + stride, j)]) // 4
+            return (
+                self._data[P(i, j - stride)]
+                + self._data[P(i, j + stride)]
+                + self._data[P(i - stride, j)]
+                + self._data[P(0 + stride, j)]
+            ) // 4
         elif j == 0:
-            return (self._data[P(i - stride, j)]
-                    + self._data[P(i + stride, j)]
-                    + self._data[P(i, j + stride)]
-                    + self._data[P(i, sub_size - stride)]) // 4
+            return (
+                self._data[P(i - stride, j)]
+                + self._data[P(i + stride, j)]
+                + self._data[P(i, j + stride)]
+                + self._data[P(i, sub_size - stride)]
+            ) // 4
         elif j == width - 1:
-            return (self._data[P(i - stride, j)]
-                    + self._data[P(i + stride, j)]
-                    + self._data[P(i, j - stride)]
-                    + self._data[P(i, 0 + stride)]) // 4
+            return (
+                self._data[P(i - stride, j)]
+                + self._data[P(i + stride, j)]
+                + self._data[P(i, j - stride)]
+                + self._data[P(i, 0 + stride)]
+            ) // 4
         else:
-            return (self._data[P(i - stride, j)]
-                    + self._data[P(i + stride, j)]
-                    + self._data[P(i, j - stride)]
-                    + self._data[P(i, j + stride)]) // 4
+            return (
+                self._data[P(i - stride, j)]
+                + self._data[P(i + stride, j)]
+                + self._data[P(i, j - stride)]
+                + self._data[P(i, j + stride)]
+            ) // 4
 
     def _avg_square_vals(self, i, j, stride):
         """
-         Given the i,j location as the center of a square,
-         average the data values at the four corners of the square and return
-         it. "Stride" represents half the length of one side of the square.
+        Given the i,j location as the center of a square,
+        average the data values at the four corners of the square and return
+        it. "Stride" represents half the length of one side of the square.
 
-         Called by fill2DFractArray.
+        Called by fill2DFractArray.
 
-         In this diagram, our input stride is 1, the i,j location is
-               indicated by "*", and the four value we want to average are
-               "X"s:
-           X   .   X
+        In this diagram, our input stride is 1, the i,j location is
+              indicated by "*", and the four value we want to average are
+              "X"s:
+          X   .   X
 
-           .   *   .
+          .   *   .
 
-           X   .   X
-         """
-        return (self._data[P(i - stride, j - stride)]
-                + self._data[P(i - stride, j + stride)]
-                + self._data[P(i + stride, j - stride)]
-                + self._data[P(i + stride, j + stride)]) // 4
+          X   .   X
+        """
+        return (
+            self._data[P(i - stride, j - stride)]
+            + self._data[P(i - stride, j + stride)]
+            + self._data[P(i + stride, j - stride)]
+            + self._data[P(i + stride, j + stride)]
+        ) // 4
 
     def _generate(self):
         """
-         Use the diamond-square algorithm to tessalate a
-         grid of float values into a fractal height map.
-         """
-        #subSize is the dimension of the array in terms of connected line
-        #segments, while size is the dimension in terms of number of
-        #vertices.
+        Use the diamond-square algorithm to tessalate a
+        grid of float values into a fractal height map.
+        """
+        # subSize is the dimension of the array in terms of connected line
+        # segments, while size is the dimension in terms of number of
+        # vertices.
 
-        width = 2 ** self.size + 1
+        width = 2**self.size + 1
         sub_size = width - 1
 
-        #Set up our roughness constants.
-        #Random numbers are always generated in the range 0.0 to 1.0.
+        # Set up our roughness constants.
+        # Random numbers are always generated in the range 0.0 to 1.0.
         #'scale' is multiplied by the randum number.
         #'ratio' is multiplied by 'scale' after each iteration
-        #to effectively reduce the random number range.
+        # to effectively reduce the random number range.
 
-        ratio = 2. ** (-self.chaos)
+        ratio = 2.0 ** (-self.chaos)
         scale = 1000
 
         # Seed the first four values. For example, in a 4x4 array, we
@@ -362,11 +382,8 @@ class SquareDiamondFractalGenerator(BaseFractalGenerator):
             while i < sub_size:
                 j = stride
                 while j < sub_size:
-                    #self._avgSquareVals (i, j, stride)
-                    self._data[P(i, j)] = (
-                        scale * self._grain[P(i, j)]
-                        + self._avg_square_vals(i, j, stride)
-                    )
+                    # self._avgSquareVals (i, j, stride)
+                    self._data[P(i, j)] = scale * self._grain[P(i, j)] + self._avg_square_vals(i, j, stride)
                     j += 2 * stride
                 i += 2 * stride
             # Take the existing "diamond" data and make it into
@@ -398,11 +415,9 @@ class SquareDiamondFractalGenerator(BaseFractalGenerator):
                     # i and j are setup. Call avgDiamondVals with the
                     # current position. It will return the average of the
                     # surrounding diamond data points.
-                    #self._avgDiamondVals (i, j, stride, subSize)
+                    # self._avgDiamondVals (i, j, stride, subSize)
                     self._data[P(i, j)] = scale * self._grain[P(i, j)]
-                    self._data[P(i, j)] += self._avg_diamond_vals(i, j,
-                                                                  stride,
-                                                                  sub_size)
+                    self._data[P(i, j)] += self._avg_diamond_vals(i, j, stride, sub_size)
                     # To wrap edges seamlessly, copy edge values around
                     # to other side of array
                     if self.wraped:

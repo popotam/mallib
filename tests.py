@@ -37,6 +37,7 @@ def test_mark_method():
 def test_mark_other_journal():
     from .meta import MARK, mark
     import collections
+
     journal = collections.defaultdict(lambda: collections.defaultdict(int))
 
     @mark('test', journal=journal)

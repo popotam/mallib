@@ -14,8 +14,12 @@ from .constants import NOT_PASSABLE
 from .finders import find_path, find_nearest_targets, NoPathFound
 from .sample import SampleXYZ, SampleConnection, SampleNode
 
-MOCK_DIRECTIONS = (SampleXYZ(1, 0, 0), SampleXYZ(-1, 0, 0),
-                   SampleXYZ(0, 1, 0), SampleXYZ(0, -1, 0))
+MOCK_DIRECTIONS = (
+    SampleXYZ(1, 0, 0),
+    SampleXYZ(-1, 0, 0),
+    SampleXYZ(0, 1, 0),
+    SampleXYZ(0, -1, 0),
+)
 SIZE_X, SIZE_Y = 10, 10
 
 
@@ -29,8 +33,7 @@ class MockNode(SampleNode):
     def generate_connections(self):
         self.connections = []
         for direction in MOCK_DIRECTIONS:
-            neighbor_xyz = SampleXYZ(self.x + direction.x,
-                                     self.y + direction.y, 0)
+            neighbor_xyz = SampleXYZ(self.x + direction.x, self.y + direction.y, 0)
             neighbor_field = self.graph.get(neighbor_xyz)
             if neighbor_field:
                 cost = 1 if neighbor_field.passable else NOT_PASSABLE
@@ -67,7 +70,7 @@ class MockGraph(dict):
 
 class TestPathfinding(unittest.TestCase):
     def setUp(self):
-        """ Build test graph to test pathfinders on it """
+        """Build test graph to test pathfinders on it"""
         self.graph = MockGraph()
 
     def test_find_path(self):
@@ -96,8 +99,7 @@ class TestPathfinding(unittest.TestCase):
     def test_find_nearest_targets_limit_distance(self):
         condition = lambda field: 'target' in field.tags
         departure = self.graph[(1, 1, 0)]
-        found_paths = find_nearest_targets(departure, condition, count=1000,
-                                           max_distance=5)
+        found_paths = find_nearest_targets(departure, condition, count=1000, max_distance=5)
         self.assertEqual(len(found_paths), 1)
 
     def test_find_nearest_targets_unavalable_target(self):
@@ -105,6 +107,7 @@ class TestPathfinding(unittest.TestCase):
         departure = self.graph[(1, 1, 0)]
         found_paths = find_nearest_targets(departure, condition)
         self.assertEqual(len(found_paths), 0)
+
 
 if __name__ == '__main__':
     unittest.main()

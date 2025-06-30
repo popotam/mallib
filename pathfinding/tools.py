@@ -33,8 +33,7 @@ def export_to_json(entry_node, fp=None, sample_size=10, only_passable=True):
             if dst not in opened:
                 opened.add(dst)
                 queue.append(dst)
-            row[3].append([dst.xyz.x, dst.xyz.y, dst.xyz.z,
-                           int(connection.cost)])
+            row[3].append([dst.xyz.x, dst.xyz.y, dst.xyz.z, int(connection.cost)])
         graph.append(row)
     del node
     opened = list(opened)
